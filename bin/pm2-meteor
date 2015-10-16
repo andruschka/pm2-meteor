@@ -1,0 +1,138 @@
+#! /usr/bin/env node
+var exec = require('child_process').exec;
+var fs = require('fs');
+var readline = require('readline');
+var cwd = process.cwd();
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+var appName,
+  mongoSettings,
+  meteorSettingsFile;
+
+var pm2Json = {
+  apps: []
+}
+var appTemplate = {
+  name: null,
+  script: "./.build/bundle/main.js",
+  exec_mode: "fork_mode",
+  env: {
+    "PORT": null,
+    "MONGO_URL": null,
+    "ROOT_URL": null,
+    "METEOR_SETTINGS": {}
+  }
+}
+
+checkIfInMeteorApp();
+
+rl.question("APPNAME: ", function(answer){
+  appTemplate.name = answer;
+  rl.question("CLUSTER INSTANCES (0/1 for FORK_MODE): ", function(answer) {
+    if (answer === "0" || answer === "1") {
+      appTemplate["exec_mode"] = "fork_mode";
+    } else {
+      appTemplate["exec_mode"] = "cluster_mode";
+      appTemplate["instances"] = parseInt(answer);
+    }
+    rl.question("PORT: ", function(answer){
+      appTemplate.env["PORT"] = parseInt(answer);
+      rl.question("MONGO URL: ", function(answer){
+        appTemplate.env["MONGO_URL"] = answer;
+        rl.question("ROOT URL: ", function(answer) {
+          appTemplate.env["ROOT_URL"] = answer;
+          rl.question("METEOR SETTINGS FILE (relative path wo. `./`): ", function(answer) {
+            if (answer && answer.trim() !== "") {
+              var envSettings = require(cwd + '/' +answer);
+              appTemplate.env["METEOR_SETTINGS"] = envSettings;
+            }
+            pm2Json.apps.push(appTemplate);
+            generateSettingsFile(pm2Json);
+            rl.question("GENERATE NODEJS BUNDLE INTO ./.bundle ? (Y/n): ", function(answer) {
+              rl.close();
+              answer = answer.trim().toLowerCase();
+              if ((answer === "no") || (answer === "n")) {
+                goodBye();
+              } else {
+                generateNodeBundle('.build');
+              }
+            });
+          });
+        });
+      });
+    });
+  });
+});
+
+function getSettingsFileName(fullPath) {
+  if (!appTemplate.name) {
+    throw new Error("Cant find Appname...")
+    return;
+  }
+  var fileName = appTemplate.name + "-pm2.json";
+  if (fullPath) {
+    return cwd + "/" + fileName;
+  } else {
+    return fileName;
+  }
+}
+
+function generateSettingsFile(jsonSettings) {
+  var filePath = getSettingsFileName(true);
+  fs.writeFileSync(filePath, JSON.stringify(jsonSettings, null, 2));
+  console.log("DONE WITH PM2 SETTINGS!");
+}
+
+function generateNodeBundle(dirName) {
+  console.log("BUILDING NODEJS BUNDLE TO "+ dirName +"");
+  exec("cd " + cwd + " && meteor build --directory " + dirName, function(err, stderr, stdout) {
+    if(err) throw new Error(err);
+    console.log(stderr + stdout);
+    console.log("DONE WITH NODEJS BUNDLE!");
+    console.log("INSTALLING DEPENDENCIES");
+    exec("cd " + cwd + "/.build/bundle/programs/server && npm i", function(err, stderr, stdout) {
+      if(err) throw new Error(err);
+      console.log(stderr + stdout);
+
+      exec("cd " + cwd + " && cp " + getSettingsFileName() + " ./.build/pm2.json", function(err, stderr, stdout) {
+        if(err) throw new Error(err);
+        console.log(stderr + stdout);
+
+        goodBye(true);
+      });
+    });
+  });
+}
+
+function goodBye(nodeBundleGenerated) {
+  if (nodeBundleGenerated) {
+    console.log("DONE WITH EVERYTHING");
+    console.log("NOW START YOUR APP WITH `cd .build && pm2 start pm2.json`");
+    return;
+  } else {
+    console.log("OK I WILL STOP NOW - TO RUN YOUR APP:");
+    console.log("RUN `meteor build --directory .build`");
+    console.log("THEN `cd .build/bundle/programs/server && npm i`");
+    console.log("FINALLY START APP WITH `pm2 start "+ getSettingsFileName() +"`");
+    return;
+  }
+}
+
+function checkIfInMeteorApp() {
+  console.log("CHECKING IF CWD IS METEOR APP");
+  result = false;
+  try {
+    var stats = fs.lstatSync(cwd + '/.meteor');
+    if (stats.isDirectory()) {
+      result = true;
+    }
+  } catch (e) {
+    result = false;
+    throw new Error("THIS IS NOT A METEOR APP!")
+  } finally {
+    return result;
+  }
+}

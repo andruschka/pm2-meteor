@@ -1,0 +1,25 @@
+{
+  "name": "pm2-meteor",
+  "version": "0.1.0",
+  "bin": "./bin/pm2-meteor",
+  "description": "Simplest way to run Meteor apps with PM2.",
+  "main": "pm2-meteor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andruschka/pm2-meteor.git"
+  },
+  "keywords": [
+    "pm2",
+    "meteor",
+    "config"
+  ],
+  "author": "andruschka <fritz.andrej@me.com> (http://github.com/andruschka)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andruschka/pm2-meteor/issues"
+  },
+  "homepage": "https://github.com/andruschka/pm2-meteor"
+}
