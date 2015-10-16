@@ -113,7 +113,7 @@ function goodBye(nodeBundleGenerated) {
     console.log("NOW START YOUR APP WITH `cd .build && pm2 start pm2.json`");
     return;
   } else {
-    console.log("OK I WILL STOP NOW - TO RUN YOUR APP:");
+    console.log("GENERATED");
     console.log("RUN `meteor build --directory .build`");
     console.log("THEN `cd .build/bundle/programs/server && npm i`");
     console.log("FINALLY START APP WITH `pm2 start "+ getSettingsFileName() +"`");
