@@ -24,6 +24,7 @@
   "homepage": "https://github.com/andruschka/pm2-meteor",
   "dependencies": {
     "cli": "^0.11.0",
-    "prompt": "^0.2.14"
+    "prompt": "^0.2.14",
+    "ssh-exec": "^1.3.0"
   }
 }
