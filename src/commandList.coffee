@@ -11,6 +11,7 @@ module.exports =
     cli.spinner "Creating new pm2-meteor.json"
     localTasks.initPM2MeteorSettings opts, (err)->
       if err
+        cli.spinner "", true
         cli.fatal "#{err.message}"
       else
         cli.spinner "#{_settings.pm2MeteorConfigName} created!", true
@@ -20,13 +21,13 @@ module.exports =
     session = remoteTasks.getRemoteSession pm2mConf
     async.series [
       (cb)->
+        remoteTasks.checkDeps session, cb
+      (cb)->
+        remoteTasks.prepareHost session, pm2mConf, cb
+      (cb)->
         localTasks.generatePM2EnvironmentSettings pm2mConf, cb
       (cb)->
         localTasks.bundleApplication pm2mConf, cb
-      (cb)->
-        remoteTasks.checkDeps session, cb
-      (cb)->
-        remoteTasks.setupProjectPath session, pm2mConf, cb
       (cb)->
         remoteTasks.backupLastTar session, pm2mConf, cb
       (cb)->
@@ -40,6 +41,7 @@ module.exports =
     ], (err)->
       if err
         localTasks.makeClean (err)-> cli.error err if err
+        cli.spinner "", true
         cli.fatal "#{err.message}"
       else
         cli.spinner "Deployed your app on the host machine!", true
@@ -49,6 +51,7 @@ module.exports =
     session = remoteTasks.getRemoteSession pm2mConf
     remoteTasks.startApp session, pm2mConf, (err)->
       if err
+        cli.spinner "", true
         cli.fatal "#{err.message}"
       else
         cli.spinner "Started your app!", true
@@ -58,15 +61,27 @@ module.exports =
     session = remoteTasks.getRemoteSession pm2mConf
     remoteTasks.stopApp session, pm2mConf, (err)->
       if err
+        cli.spinner "", true
         cli.fatal "#{err.message}"
       else
         cli.spinner "Stopped your app!", true
   status: ()->
-    cli.spinner "Checking your app"
+    cli.spinner "Checking status"
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
-    remoteTasks.status session, pm2mConf, (err)->
+    remoteTasks.status session, pm2mConf, (err, result)->
       if err
+        cli.spinner "", true
         cli.fatal "#{err.message}"
       else
-        cli.spinner "Stopped your app!", true
+        cli.spinner "", true
+        cli.ok result
+  generateEnvFile: ()->
+    cli.spinner "Generating pm2 env file"
+    pm2mConf = commonTasks.readPM2MeteorConfig()
+    localTasks.generatePM2EnvironmentSettings pm2mConf, (err)->
+      if err
+        cli.pinner "Oh oh.", true
+        cli.fatal "#{err.message}"
+      else
+        cli.spinner "Generated #{_settings.pm2EnvConfigName}!"

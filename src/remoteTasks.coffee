@@ -11,8 +11,17 @@ module.exports =
     return nodemiral.session pm2mConf.server.host,
       username: pm2mConf.server.username
       password: pm2mConf.server.password
-  setupProjectPath: (session, pm2mConf, done)->
-    session.execute "mkdir -p #{path.join pm2mConf.server.deploymentDir, pm2mConf.appName}", {}, (err,code,logs)->
+  checkDeps: (session, done)->
+    session.execute "node --version && npm --version && pm2 --version", {}, (err, code, logs)->
+      if err
+        done err
+      else
+        if logs.stderr and logs.stderr.length > 0
+          done message: "Please make sure you have node, npm and pm2 installed on your remote machine!"
+        else
+          done()
+  prepareHost: (session, pm2mConf, done)->
+    session.execute "mkdir -p #{path.join pm2mConf.server.deploymentDir, pm2mConf.appName, _settings.backupDir}", {}, (err,code,logs)->
       if err
         done err
       else
@@ -63,18 +72,7 @@ module.exports =
         if logs.stderr
           done message: logs.stderr
         if logs.stdout
-          console.log stdout
-        done()
-
-  checkDeps: (session, done)->
-    session.execute "node --version && npm --version && pm2 --version", {}, (err, code, logs)->
-      if err
-        done err
-      else
-        if logs.stderr and logs.stderr.length > 0
-          done message: "Please make sure you have npm and pm2 installed on your remote machine!"
-        else
-          done()
+          done null, logs.stdout
 
   backupLastTar: (session, pm2mConf, done)->
     session.execute "cd #{getAppLocation(pm2mConf)} && mv #{_settings.bundleTarName} backup_#{_settings.bundleTarName}", (err, code, logs)->

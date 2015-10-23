@@ -23,3 +23,4 @@ module.exports =
     apps: []
   bundleTarName: "bundle.tar.gz"
   bundleName: "bundle"
+  backupDir: "backupLocation"
