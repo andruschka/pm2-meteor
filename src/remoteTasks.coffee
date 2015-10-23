@@ -1,16 +1,20 @@
 path = require 'path'
 nodemiral = require 'nodemiral'
 cli = require 'cli'
+fs = require 'fs'
 _settings = require "./settings"
 CWD = process.cwd()
+abs = require "abs"
 getAppLocation = (pm2mConf)->  path.join pm2mConf.server.deploymentDir, pm2mConf.appName
 
 # Remote tasks
 module.exports =
   getRemoteSession: (pm2mConf)->
-    return nodemiral.session pm2mConf.server.host,
+    session = nodemiral.session "#{pm2mConf.server.host}",
       username: pm2mConf.server.username
-      password: pm2mConf.server.password
+      password: pm2mConf.server.password if pm2mConf.server.password
+      pem: fs.readFileSync(abs(pm2mConf.server.pem)) if pm2mConf.server.pem
+    return session
   checkDeps: (session, done)->
     session.execute "node --version && npm --version && pm2 --version", {}, (err, code, logs)->
       if err
@@ -21,14 +25,18 @@ module.exports =
         else
           done()
   prepareHost: (session, pm2mConf, done)->
-    session.execute "mkdir -p #{path.join pm2mConf.server.deploymentDir, pm2mConf.appName, _settings.backupDir}", {}, (err,code,logs)->
+    session.execute "mkdir -p #{path.join getAppLocation(pm2mConf), _settings.backupDir}", {}, (err,code,logs)->
       if err
         done err
       else
+        if logs.stderr and logs.stderr.length > 0
+          done message: "#{logs.stderr}"
         done()
   shipTarBall: (session, pm2mConf, done)->
     tarLocation = path.join CWD, _settings.bundleTarName
     destination = path.join getAppLocation(pm2mConf), _settings.bundleTarName
+    console.log tarLocation
+    console.log destination
     session.copy tarLocation, destination, {progressBar: true} , (err, code, logs)->
       if err
         done err
@@ -75,8 +83,8 @@ module.exports =
           done null, logs.stdout
 
   backupLastTar: (session, pm2mConf, done)->
-    session.execute "cd #{getAppLocation(pm2mConf)} && mv #{_settings.bundleTarName} backup_#{_settings.bundleTarName}", (err, code, logs)->
+    session.execute "cd #{getAppLocation(pm2mConf)} && mv #{_settings.bundleTarName} backup/ 2>/dev/null", (err, code, logs)->
       if err
-        done err
+        done()
       else
         done()

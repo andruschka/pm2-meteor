@@ -3,26 +3,21 @@ fs = require 'fs'
 path = require 'path'
 nodemiral = require 'nodemiral'
 url = require 'url'
+abs = require 'abs'
 _settings = require './settings'
 CWD = process.cwd()
 
+isGitProject = (pm2mConf)->
+  if !pm2mConf.appLocation.local or pm2mConf.appLocation.local.trim() is ""
+    return true
+  else
+    return false
+
+
 # Local tasks
 module.exports =
-  initPM2MeteorSettings: (opts, done)->
+  initPM2MeteorSettings: (done)->
     json = _settings.pm2MeteorConfigTemplate
-    json.appName = opts.appName if opts.appName
-    json.meteorSettingsLocation = path.resolve(CWD, opts.meteorSettingsLocation) if opts.meteorSettingsLocation
-    json.env.ROOT_URL = opts.ROOT_URL if opts.ROOT_URL
-    json.env.PORT = opts.PORT if opts.PORT
-    json.env.MONGO_URL = opts.MONGO_URL if opts.MONGO_URL
-    if opts.location
-      parsedUrl = url.parse opts.location
-      if parsedUrl.protocol
-        json.appLocation.gitUrl = parsedUrl.href
-        if opts.branch
-          json.appLocation.branch = opts.branch
-      else
-        json.appLocation = path.resolve CWD, opts.location
     prettyJson = JSON.stringify(json, null, 2)
     try
       fs.writeFileSync _settings.pm2MeteorConfigName, prettyJson
@@ -41,26 +36,30 @@ module.exports =
     appJson.instances = pm2mConf.server.instances
     # get Meteor settings
     meteorSettingsObj = {}
-    if pm2mConf.meteorSettingsLocation
-      try
-        meteorSettingsObj = JSON.parse(fs.readFileSync("#{pm2mConf.meteorSettingsLocation}", 'utf8'))
-      catch err
-        done "#{err.message}"
+    unless isGitProject pm2mConf
+      if pm2mConf.meteorSettingsLocation
+        try
+          meteorSettingsLocation = abs(pm2mConf.meteorSettingsLocation)
+          meteorSettingsObj = JSON.parse(fs.readFileSync meteorSettingsLocation, 'utf8')
+        catch err
+          done err
+    else
+      done message: "Git deployment is still under construction"
     appJson.env["METEOR_SETTINGS"] = meteorSettingsObj
     envJson.apps.push appJson
     prettyJson = JSON.stringify(envJson, null, 2)
     try
       fs.writeFileSync _settings.pm2EnvConfigName, prettyJson
     catch err
-      done "#{err.message}"
+      done message: "#{err.message}"
     done()
 
   bundleApplication: (pm2mConf, done)->
-    exec "cd #{pm2mConf.appLocation} && meteor build --directory #{CWD}", (err, stdout, stderr)->
+    exec "cd #{abs(pm2mConf.appLocation.local)} && meteor build #{pm2mConf.meteorBuildFlags} --directory #{CWD}", (err, stdout, stderr)->
       if err
         done err
       else
-        exec "cd #{CWD} && tar -zcvf bundle.tar.gz bundle #{_settings.pm2EnvConfigName}", {maxBuffer: 1024*200000}, (err, stdout, stderr)->
+        exec "cd #{CWD} && tar -zcvf #{_settings.bundleTarName} #{_settings.bundleName} #{_settings.pm2EnvConfigName}", {maxBuffer: 1024*200000}, (err, stdout, stderr)->
           if err
             done err
           else

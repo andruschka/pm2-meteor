@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/andruschka/pm2-meteor",
   "dependencies": {
+    "abs": "^1.0.0",
     "async": "^1.4.2",
     "cli": "^0.11.0",
     "nodemiral": "^1.1.1"

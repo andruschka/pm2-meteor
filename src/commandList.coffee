@@ -7,9 +7,9 @@ _settings = require './settings'
 
 # CLI commands
 module.exports =
-  init: (opts)->
+  init: ()->
     cli.spinner "Creating new pm2-meteor.json"
-    localTasks.initPM2MeteorSettings opts, (err)->
+    localTasks.initPM2MeteorSettings (err)->
       if err
         cli.spinner "", true
         cli.fatal "#{err.message}"
@@ -27,13 +27,15 @@ module.exports =
       (cb)->
         localTasks.generatePM2EnvironmentSettings pm2mConf, cb
       (cb)->
-        localTasks.bundleApplication pm2mConf, cb
+        if !pm2mConf.appLocation.local or pm2mConf.appLocation.local.trim() is ""
+          cli.fatal "Sorry, git deployment is still under construction"
+        else
+          localTasks.bundleApplication pm2mConf, cb
       (cb)->
         remoteTasks.backupLastTar session, pm2mConf, cb
       (cb)->
+        console.log "shipping tarball"
         remoteTasks.shipTarBall session, pm2mConf, cb
-      (cb)->
-        localTasks.makeClean cb
       (cb)->
         remoteTasks.extractTarBall session, pm2mConf, cb
       (cb)->
@@ -44,6 +46,7 @@ module.exports =
         cli.spinner "", true
         cli.fatal "#{err.message}"
       else
+        localTasks.makeClean (err)-> cli.error err if err
         cli.spinner "Deployed your app on the host machine!", true
   start: ()->
     cli.spinner "Starting app on host machine"
