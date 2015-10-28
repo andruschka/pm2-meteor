@@ -1,12 +1,11 @@
 {
   "name": "pm2-meteor",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "bin": "./lib/pm2-meteor",
   "description": "Deploys your Meteor apps and runs 'em with pm2.",
   "main": "pm2-meteor.js",
   "scripts": {
-    "build": "coffee --output lib --compile src && echo '#!/usr/bin/env node' > lib/pm2-meteor && cat lib/pm2-meteor.js >> lib/pm2-meteor && chmod +x lib/pm2-meteor && rm lib/pm2-meteor.js",
-    "preinstall": "npm run build"
+    "build": "coffee --output lib --compile src && echo '#!/usr/bin/env node' > lib/pm2-meteor && cat lib/pm2-meteor.js >> lib/pm2-meteor && chmod +x lib/pm2-meteor && rm lib/pm2-meteor.js"
   },
   "repository": {
     "type": "git",
