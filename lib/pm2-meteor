@@ -7,7 +7,7 @@
 
   cmds = require('./commandList');
 
-  commands = ['init', 'deploy', 'start', 'stop', 'status', 'generateEnvFile'];
+  commands = ['init', 'deploy', 'start', 'stop', 'status', 'generateBundle'];
 
   options = cli.parse(null, commands);
 

@@ -7,6 +7,7 @@ module.exports =
       git: ""
       branch: "master"
     meteorSettingsLocation: ""
+    prebuildScript: ""
     meteorBuildFlags: ""
     env:
       ROOT_URL: ""
@@ -18,7 +19,7 @@ module.exports =
       password: ""
       deploymentDir: "/opt/pm2-meteor"
       exec_mode: "fork_mode"
-      instances: 0
+      instances: 1
   pm2EnvConfigName: "pm2-env.json"
   pm2EnvConfigTemplate:
     apps: []

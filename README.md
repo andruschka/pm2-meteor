@@ -41,7 +41,12 @@ $ pm2-meteor init
   // "meteorSettingsLocation":"settings/production.json",
 
   // build flags for Meteor
-  meteorBuildFlags: "--architecture os.linux.x86_64"
+  "meteorBuildFlags": "--architecture os.linux.x86_64"
+
+  // runs as command in the meteor app before building
+  "prebuildScript": "",
+  // say you are still using meteorite and want to install deps before deploying:
+  // "prebuildScript": "mrt install",
 
   // the env vars
   // (METEOR_SETTINGS will be generated from your meteor-settings file)
@@ -84,7 +89,12 @@ $ cd ../ && pm2 startOrRestart pm2-env.json
 
 ### 4. Control your app
 ```
-pm2-meteor start
-pm2-meteor stop
-pm2-meteor status
+$ pm2-meteor start
+$ pm2-meteor stop
+$ pm2-meteor status
+```
+
+## If you want to deploy yourself and just need a bundle
+```
+$ pm2-meteor generateBundle
 ```

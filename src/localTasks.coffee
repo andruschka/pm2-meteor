@@ -19,17 +19,16 @@ reapplyMeteorSettings = (pm2mConf)->
       meteorSettingsObj = {}
       meteorSettingsLocation = path.join CWD, _settings.gitDirName, pm2mConf.meteorSettingsLocation
       pm2EnvLocation = path.join CWD, _settings.pm2EnvConfigName
-      meteorSettingsObj = require meteorSettingsLocation
-      pm2EnvObj = require pm2EnvLocation
-      pm2EnvObj.apps[0].env["METEOR_SETTINGS"] = meteorSettingsObj
-      prettyJson = JSON.stringify(pm2EnvObj, null, 2)
       try
+        meteorSettingsObj = require meteorSettingsLocation
+        pm2EnvObj = require pm2EnvLocation
+        pm2EnvObj.apps[0].env["METEOR_SETTINGS"] = meteorSettingsObj
+        prettyJson = JSON.stringify(pm2EnvObj, null, 2)
         fs.writeFileSync _settings.pm2EnvConfigName, prettyJson
       catch err
-        console.log "Couldn't update #{_settings.pm2EnvConfigName} with Meteor Settings"
         console.log err.message
-        process.exit 1
-
+        return false
+  return true
 
 # Local tasks
 module.exports =
@@ -70,11 +69,16 @@ module.exports =
     done()
 
   bundleApplication: (pm2mConf, done)->
-    exec "cd #{abs(pm2mConf.appLocation.local)} && meteor build #{pm2mConf.meteorBuildFlags} --directory #{CWD}", (err, stdout, stderr)->
+    buildScript = ""
+    if pm2mConf.prebuildScript and pm2mConf.prebuildScript.trim() isnt ""
+      buildScript  += "cd #{abs(pm2mConf.appLocation.local)} && #{pm2mConf.prebuildScript} && "
+    buildScript += "cd #{abs(pm2mConf.appLocation.local)} && meteor build #{pm2mConf.meteorBuildFlags} --directory #{CWD}"
+    exec buildScript, (err, stdout, stderr)->
       if err
         done err
       else
-        exec "cd #{CWD} && tar -zcvf #{_settings.bundleTarName} #{_settings.bundleName} #{_settings.pm2EnvConfigName}", {maxBuffer: 1024*200000}, (err, stdout, stderr)->
+        buildScript = "cd #{CWD} && tar -zcvf #{_settings.bundleTarName} #{_settings.bundleName} #{_settings.pm2EnvConfigName}"
+        exec buildScript, {maxBuffer: 1024*200000}, (err, stdout, stderr)->
           if err
             done err
           else
@@ -84,18 +88,30 @@ module.exports =
       if err
         done err
       else
-        reapplyMeteorSettings pm2mConf
-        exec "cd #{path.join CWD, _settings.gitDirName} && meteor build #{pm2mConf.meteorBuildFlags} --directory #{CWD}", (err, sdout, stderr)->
-          if err
-            done err
-          else
-            exec "cd #{CWD} && tar -zcvf #{_settings.bundleTarName} #{_settings.bundleName} #{_settings.pm2EnvConfigName}", {maxBuffer: 1024*200000}, (err, stdout, stderr)->
-              if err
-                done err
-              else
-                done()
+        if reapplyMeteorSettings(pm2mConf) is false
+          done({message: "Something went wrong wihile building METEOR_SETTINGS" })
+        else
+          buildScript = "cd #{path.join CWD, _settings.gitDirName} "
+          if pm2mConf.prebuildScript and pm2mConf.prebuildScript.trim() isnt ""
+            buildScript  += "&& #{pm2mConf.prebuildScript} "
+          buildScript  += "&& meteor build #{pm2mConf.meteorBuildFlags} --directory #{CWD}"
+          exec buildScript, (err, sdout, stderr)->
+            if err
+              done err
+            else
+              exec "cd #{CWD} && tar -zcvf #{_settings.bundleTarName} #{_settings.bundleName} #{_settings.pm2EnvConfigName}", {maxBuffer: 1024*200000}, (err, stdout, stderr)->
+                if err
+                  done err
+                else
+                  done()
   makeClean: (done)->
     exec "cd #{CWD} && rm -rf #{_settings.bundleName} && rm #{_settings.pm2EnvConfigName} && rm #{_settings.bundleTarName} && rm -rf #{_settings.gitDirName}", (err, stdout, stderr)->
+      if err
+        done err
+      else
+        done()
+  makeCleanAndLeaveBundle: (done)->
+    exec "cd #{CWD} && rm -rf #{_settings.bundleName} && rm #{_settings.pm2EnvConfigName} && rm -rf #{_settings.gitDirName}", (err, stdout, stderr)->
       if err
         done err
       else

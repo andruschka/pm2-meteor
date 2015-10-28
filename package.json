@@ -1,6 +1,6 @@
 {
   "name": "pm2-meteor",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "bin": "./lib/pm2-meteor",
   "description": "Deploys your Meteor apps and runs 'em with pm2.",
   "main": "pm2-meteor.js",
@@ -16,7 +16,8 @@
     "meteor",
     "config",
     "deploy",
-    "deployment"
+    "deployment",
+    "meteorite"
   ],
   "author": "andruschka <fritz.andrej@me.com> (http://github.com/andruschka)",
   "license": "MIT",

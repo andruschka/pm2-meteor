@@ -16,7 +16,7 @@ module.exports =
       else
         cli.spinner "#{_settings.pm2MeteorConfigName} created!", true
   deploy: ()->
-    cli.spinner "Building and deploying your app on host machine"
+    cli.spinner "Building your app and deploying to host machine"
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
     async.series [
@@ -42,13 +42,13 @@ module.exports =
       (cb)->
         remoteTasks.reloadApp session, pm2mConf, cb
     ], (err)->
+      cli.spinner "", true
       if err
         localTasks.makeClean (err)-> cli.error err if err
-        cli.spinner "", true
         cli.fatal "#{err.message}"
       else
         localTasks.makeClean (err)-> cli.error err if err
-        cli.spinner "Deployed your app on the host machine!", true
+        cli.ok "Deployed your app on the host machine!"
   start: ()->
     cli.spinner "Starting app on host machine"
     pm2mConf = commonTasks.readPM2MeteorConfig()
@@ -79,12 +79,22 @@ module.exports =
         cli.fatal "#{err.message}"
       else
         cli.info result
-  generateEnvFile: ()->
-    cli.spinner "Generating pm2 env file"
+  generateBundle: ()->
+    cli.spinner "Generating bundle with pm2-env file"
     pm2mConf = commonTasks.readPM2MeteorConfig()
-    localTasks.generatePM2EnvironmentSettings pm2mConf, (err)->
+    async.series [
+      (cb)->
+        localTasks.generatePM2EnvironmentSettings pm2mConf, cb
+      (cb)->
+        if !pm2mConf.appLocation.local or pm2mConf.appLocation.local.trim() is ""
+          localTasks.bundleApplicationFromGit pm2mConf, cb
+        else
+          localTasks.bundleApplication pm2mConf, cb
+      (cb)->
+        localTasks.makeCleanAndLeaveBundle cb
+    ], (err)->
+      cli.spinner "", true
       if err
-        cli.pinner "Oh oh.", true
         cli.fatal "#{err.message}"
       else
-        cli.spinner "Generated #{_settings.pm2EnvConfigName}!"
+        cli.ok "Generated #{_settings.bundleTarName} with pm2-env file"
