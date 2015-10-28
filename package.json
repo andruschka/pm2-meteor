@@ -1,6 +1,6 @@
 {
   "name": "pm2-meteor",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "bin": "./lib/pm2-meteor",
   "description": "Deploys your Meteor apps (from a git repo if you wish so) and runs 'em with pm2.",
   "main": "pm2-meteor.js",
