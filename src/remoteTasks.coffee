@@ -43,7 +43,7 @@ module.exports =
       else
         done()
   extractTarBall: (session, pm2mConf, done)->
-    session.execute "cd #{getAppLocation(pm2mConf)} && tar -xf #{_settings.bundleTarName}", {}, (err, code, logs)->
+    session.execute "cd #{getAppLocation(pm2mConf)} && rm -rf #{_settings.bundleName} && tar -xf #{_settings.bundleTarName}", {}, (err, code, logs)->
       if err
         done err
       else
@@ -89,7 +89,7 @@ module.exports =
       else
         done()
   reloadApp: (session, pm2mConf, done)->
-    session.execute "cd #{getAppLocation(pm2mConf)} && pm2 startOrRestart #{_settings.pm2EnvConfigName}", {}, (err, code, logs)->
+    session.execute "cd #{getAppLocation(pm2mConf)} && pm2 delete #{pm2mConf.appName} && pm2 startOrRestart #{_settings.pm2EnvConfigName}", {}, (err, code, logs)->
       if err
         done err
       else
