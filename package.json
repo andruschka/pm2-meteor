@@ -1,8 +1,8 @@
 {
   "name": "pm2-meteor",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "bin": "./lib/pm2-meteor",
-  "description": "Simplest way to run Meteor apps with PM2.",
+  "description": "Deploys your Meteor apps and runs 'em with pm2.",
   "main": "pm2-meteor.js",
   "scripts": {
     "build": "coffee --output lib --compile src && echo '#!/usr/bin/env node' > lib/pm2-meteor && cat lib/pm2-meteor.js >> lib/pm2-meteor && chmod +x lib/pm2-meteor && rm lib/pm2-meteor.js",
@@ -15,7 +15,9 @@
   "keywords": [
     "pm2",
     "meteor",
-    "config"
+    "config",
+    "deploy",
+    "deployment"
   ],
   "author": "andruschka <fritz.andrej@me.com> (http://github.com/andruschka)",
   "license": "MIT",
