@@ -28,18 +28,19 @@ module.exports =
         localTasks.generatePM2EnvironmentSettings pm2mConf, cb
       (cb)->
         if !pm2mConf.appLocation.local or pm2mConf.appLocation.local.trim() is ""
-          cli.fatal "Sorry, git deployment is still under construction"
+          localTasks.bundleApplicationFromGit pm2mConf, cb
         else
           localTasks.bundleApplication pm2mConf, cb
       (cb)->
         remoteTasks.backupLastTar session, pm2mConf, cb
       (cb)->
-        console.log "shipping tarball"
         remoteTasks.shipTarBall session, pm2mConf, cb
       (cb)->
         remoteTasks.extractTarBall session, pm2mConf, cb
       (cb)->
         remoteTasks.installBundleDeps session, pm2mConf, cb
+      (cb)->
+        remoteTasks.reloadApp session, pm2mConf, cb
     ], (err)->
       if err
         localTasks.makeClean (err)-> cli.error err if err
@@ -53,32 +54,31 @@ module.exports =
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
     remoteTasks.startApp session, pm2mConf, (err)->
+      cli.spinner "", true
       if err
-        cli.spinner "", true
         cli.fatal "#{err.message}"
       else
-        cli.spinner "Started your app!", true
+        cli.ok "Started your app!"
   stop: ()->
     cli.spinner "Stopping app on host machine"
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
     remoteTasks.stopApp session, pm2mConf, (err)->
+      cli.spinner "", true
       if err
-        cli.spinner "", true
         cli.fatal "#{err.message}"
       else
-        cli.spinner "Stopped your app!", true
+        cli.ok "Stopped your app!"
   status: ()->
     cli.spinner "Checking status"
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
     remoteTasks.status session, pm2mConf, (err, result)->
+      cli.spinner "", true
       if err
-        cli.spinner "", true
         cli.fatal "#{err.message}"
       else
-        cli.spinner "", true
-        cli.ok result
+        cli.info result
   generateEnvFile: ()->
     cli.spinner "Generating pm2 env file"
     pm2mConf = commonTasks.readPM2MeteorConfig()

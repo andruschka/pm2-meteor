@@ -73,18 +73,26 @@ module.exports =
         done()
 
   status: (session, pm2mConf, done)->
-    session.execute "cd #{getAppLocation(pm2mConf)} && pm2 show #{_settings.pm2EnvConfigName}", {}, (err, code, logs)->
+    session.execute "pm2 show #{pm2mConf.appName}", {}, (err, code, logs)->
       if err
         done err
       else
         if logs.stderr
-          done message: logs.stderr
+          done(null, logs.stderr)
         if logs.stdout
-          done null, logs.stdout
+          done(null, logs.stdout)
 
   backupLastTar: (session, pm2mConf, done)->
-    session.execute "cd #{getAppLocation(pm2mConf)} && mv #{_settings.bundleTarName} backup/ 2>/dev/null", (err, code, logs)->
+    session.execute "cd #{getAppLocation(pm2mConf)} && mv #{_settings.bundleTarName} backup/ 2>/dev/null", {}, (err, code, logs)->
       if err
         done()
       else
+        done()
+  reloadApp: (session, pm2mConf, done)->
+    session.execute "cd #{getAppLocation(pm2mConf)} && pm2 startOrRestart #{_settings.pm2EnvConfigName}", {}, (err, code, logs)->
+      if err
+        done err
+      else
+        if logs.stderr
+          console.log logs.stderr
         done()

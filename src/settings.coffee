@@ -4,8 +4,8 @@ module.exports =
     appName: ""
     appLocation:
       local: ""
-      # git: ""
-      # branch: "master"
+      git: ""
+      branch: "master"
     meteorSettingsLocation: ""
     meteorBuildFlags: ""
     env:
@@ -26,3 +26,4 @@ module.exports =
   bundleTarName: "bundle.tar.gz"
   bundleName: "bundle"
   backupDir: "backup"
+  gitDirName: "git-src"
