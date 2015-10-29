@@ -89,10 +89,16 @@ module.exports =
       else
         done()
   reloadApp: (session, pm2mConf, done)->
-    session.execute "cd #{getAppLocation(pm2mConf)} && pm2 delete #{pm2mConf.appName} && pm2 startOrRestart #{_settings.pm2EnvConfigName}", {}, (err, code, logs)->
+    session.execute "cd #{getAppLocation(pm2mConf)} && pm2 delete #{pm2mConf.appName}", {}, (err, code, logs)->
       if err
         done err
       else
         if logs.stderr
           console.log logs.stderr
-        done()
+        session.execute "cd #{getAppLocation(pm2mConf)} && pm2 start #{_settings.pm2EnvConfigName}", {}, (err, code, logs)->
+          if err
+            done err
+          else
+            if logs.stderr
+              console.log logs.stderr
+            done()
