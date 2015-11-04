@@ -74,6 +74,8 @@ $ pm2-meteor init
     "host": "my-host.com",
     "username": "nodejs",
     "password": "trustno1",
+    // optional port
+    // "port": 22
     // or auth with pem file
     // "pem":"~/.ssh/id_rsa",
 
@@ -136,6 +138,7 @@ Deploy from a private github repo and start 2 load balanced instances:
   "server": {
     "host": "my-host.co",
     "username": "nodejs",
+    "port": 22,
     "pem": "~/.ssh/id_rsa",
     "deploymentDir": "/home/nodejs/",
     "exec_mode": "cluster_mode",
@@ -163,6 +166,7 @@ Deploy a local app and run app in fork-mode:
   "server": {
     "host": "my-host.co",
     "username": "nodejs",
+    "port": 22,
     "pem": "~/.ssh/id_rsa",
     "deploymentDir": "/home/nodejs/",
     "exec_mode": "fork_mode",
