@@ -123,13 +123,15 @@ module.exports =
         if logs.stderr
           console.log logs.stder
         done()
-  scale: (session, pm2mConf, sParam, done)->
-    session.execute "pm2 scale #{pm2mConf.appName} #{sParam}", {}, (err, code, logs)->
+  scaleApp: (session, pm2mConf, sParam, done)->
+    scaleCmd = "pm2 scale #{pm2mConf.appName} #{sParam}"
+    console.log scaleCmd
+    session.execute scaleCmd, {}, (err, code, logs)->
       if err
         done err
       else
         if logs.stderr
-          console.log logs.stder
+          done message: logs.stderr
         if logs.stdout
           console.log logs.stdout
         done()

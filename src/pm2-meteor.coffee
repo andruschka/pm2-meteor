@@ -42,9 +42,9 @@ program
     cmds["undeploy"]()
 program
   .command('scale <instances>')
-  .description('scale App up/down/to instances')
+  .description('scale App to number-of-instances')
   .action( (instances)->
-    cmds["scale"](instances)
+    cmds["scale"]("#{instances}")
   ).on '--help', ()->
     console.log "  Examples:"
     console.log "  $ pm2-meteor scale +2"

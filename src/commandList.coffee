@@ -116,4 +116,12 @@ module.exports =
       else
         cli.ok "Undeployed your App!"
   scale: (opts)->
-    cli.info "Scaled up your app #{opts}"
+    cli.spinner "Scaling your App"
+    pm2mConf = commonTasks.readPM2MeteorConfig()
+    session = remoteTasks.getRemoteSession pm2mConf
+    remoteTasks.scaleApp session, pm2mConf, opts, (err)->
+      cli.spinner "", true
+      if err
+        cli.fatal "#{err.message}"
+      else
+        cli.ok "Scaled your App"

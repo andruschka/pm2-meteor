@@ -117,11 +117,6 @@ Start 2 more instances:
 $ pm2-meteor scale +2
 ```
 
-Shut-down 1 instance:
-```
-$ pm2-meteor scale -1
-```
-
 Down/Upgrade to 4 instances
 ```
 $ pm2-meteor scale 4
