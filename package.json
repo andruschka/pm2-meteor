@@ -1,6 +1,6 @@
 {
   "name": "pm2-meteor",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "bin": "./lib/pm2-meteor",
   "description": "Simplest way to deploy, scale and run Meteor Apps with PM2.",
   "main": "pm2-meteor.js",
