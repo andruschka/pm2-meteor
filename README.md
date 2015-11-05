@@ -19,6 +19,10 @@ PM2 is a process manager, that will run/restart Nodejs apps, just like forever -
 
 ### check out PM2 here: http://pm2.keymetrics.io/
 
+## TODO
+- fork_mode (we recommend to use the cluster_mode)
+- further sticky-session implementation (except of Meteor.environmentVars this works out of the box with PM2 cluster_mode)
+
 ## Installation
 ```
 $ npm i -g pm2-meteor
