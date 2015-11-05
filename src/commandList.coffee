@@ -125,3 +125,9 @@ module.exports =
         cli.fatal "#{err.message}"
       else
         cli.ok "Scaled your App"
+  logs: ()->
+    pm2mConf = commonTasks.readPM2MeteorConfig()
+    session = remoteTasks.getRemoteSession pm2mConf
+    remoteTasks.getAppLogs session, pm2mConf, (err)->
+      if err
+        cli.fatal "#{err.message}"

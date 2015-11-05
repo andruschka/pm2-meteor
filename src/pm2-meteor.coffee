@@ -41,6 +41,11 @@ program
   .action (instances)->
     cmds["undeploy"]()
 program
+  .command('logs')
+  .description('stream realtime logs for App')
+  .action (instances)->
+    cmds["logs"]()
+program
   .command('scale <instances>')
   .description('scale App to number-of-instances')
   .action( (instances)->

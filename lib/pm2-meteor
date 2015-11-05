@@ -37,6 +37,10 @@
     return cmds["undeploy"]();
   });
 
+  program.command('logs').description('shows the App logs').action(function(instances) {
+    return cmds["logs"]();
+  });
+
   program.command('scale <instances>').description('scale App to number-of-instances').action(function(instances) {
     return cmds["scale"]("" + instances);
   }).on('--help', function() {
