@@ -5,8 +5,7 @@
   "description": "Simplest way to deploy, scale and run Meteor Apps with PM2.",
   "main": "pm2-meteor.js",
   "scripts": {
-    "build": "coffee --output lib --compile src && echo '#!/usr/bin/env node' > lib/pm2-meteor && cat lib/pm2-meteor.js >> lib/pm2-meteor && chmod +x lib/pm2-meteor && rm lib/pm2-meteor.js",
-    "preinstall": "npm run build"
+    "build": "coffee --output lib --compile src && echo '#!/usr/bin/env node' > lib/pm2-meteor && cat lib/pm2-meteor.js >> lib/pm2-meteor && chmod +x lib/pm2-meteor && rm lib/pm2-meteor.js"
   },
   "repository": {
     "type": "git",

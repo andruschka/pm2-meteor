@@ -48,7 +48,6 @@ program
   ).on '--help', ()->
     console.log "  Examples:"
     console.log "  $ pm2-meteor scale +2"
-    console.log "  $ pm2-meteor scale -1"
     console.log "  $ pm2-meteor scale 4"
 program.on '--help', ()->
   console.log "  Visit us:"

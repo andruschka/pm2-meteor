@@ -87,7 +87,9 @@ $ pm2-meteor init
     // exec mode for pm2
     "exec_mode": "cluster_mode",
     "instances": 2
-  }
+  },
+  // set this one if you want to undeploy your app
+  // "allowUndeploy": true
 }
 ```
 
@@ -120,6 +122,12 @@ $ pm2-meteor scale +2
 Down/Upgrade to 4 instances
 ```
 $ pm2-meteor scale 4
+```
+
+### 6. Undeploy your app (DANGEROUS)
+To delete your app from the PM2 deamon and delete all app files add "allowUndeploy":true to your pm2-meteor setting, then:  
+```
+$ pm2-meteor undeploy
 ```
 
 ## If you want to deploy the bundle by yourself
