@@ -37,7 +37,7 @@
     return cmds["undeploy"]();
   });
 
-  program.command('logs').description('shows the App logs').action(function(instances) {
+  program.command('logs').description('stream realtime logs for App').action(function(instances) {
     return cmds["logs"]();
   });
 
