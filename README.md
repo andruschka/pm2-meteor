@@ -115,6 +115,7 @@ $ pm2 start pm2-env.json
 $ pm2-meteor start
 $ pm2-meteor stop
 $ pm2-meteor status
+$ pm2-meteor logs
 ```
 
 ### 5. SCALE your app
