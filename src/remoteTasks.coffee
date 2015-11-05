@@ -27,7 +27,6 @@ module.exports =
       else
         if logs.stderr and logs.stderr.length > 0 and /.*missing.*/.test(logs.stderr)
           console.log ""
-          console.log "*** DEBUG ***"
           console.log logs.stderr
           done message: "Please make sure you have node, npm and pm2 installed on your remote machine!"
         else
