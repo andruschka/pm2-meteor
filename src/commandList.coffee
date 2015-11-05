@@ -98,3 +98,22 @@ module.exports =
         cli.fatal "#{err.message}"
       else
         cli.ok "Generated #{_settings.bundleTarName} with pm2-env file"
+  undeploy: ()->
+    cli.spinner "Undeploying your App"
+    pm2mConf = commonTasks.readPM2MeteorConfig()
+    unless pm2mConf.allowUndeploy and pm2mConf.allowUndeploy is true
+      cli.fatal "Please set ´allowUndeploy´ to true in your pm2-meteor settings file!"
+    session = remoteTasks.getRemoteSession pm2mConf
+    async.series [
+      (cb)->
+        remoteTasks.killApp session, pm2mConf, cb
+      (cb)->
+        remoteTasks.deleteAppFolder session, pm2mConf, cb
+    ], (err)->
+      cli.spinner "", true
+      if err
+        cli.fatal "#{err.message}"
+      else
+        cli.ok "Undeployed your App!"
+  scale: (opts)->
+    cli.info "Scaled up your app #{opts}"

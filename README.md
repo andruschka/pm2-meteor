@@ -1,20 +1,20 @@
 # pm2-meteor
-A CLI tool, that will deploy your Meteor app (from your dev machine or from git) as nodejs-bundle and run it with pm2.  
-(tested with Ubuntu and Freebsd hosts)
+A CLI tool, that will deploy your Meteor app (from your dev machine or from git) as Nodejs bundle and run it with PM2. (tested with Ubuntu and Freebsd hosts)
+
 ## A friendly info
 This tool is still under construction and we will continue adding features.  
-We decided to build this, because meteor-up didn't fit our requirements. Here is why:
-1. we wanted to be able to deploy from a git repo
-2. we wanted to be able to deploy to freebsd
-3. we wanted to use PM2 instead of forever
-4. we wanted to be able to pass a settings file path instead of a whole Meteor setting
-5. we wanted to have control over the deployment destination / directory
+What is different about this tool:  
+1. you can deploy from a git repo  
+2. you can deploy to freebsd jails  
+3. it uses PM2 to run your Meteor Apps  
+4. you pass the path to the Meteor settings file, instead of copy-pasting them  
+5. you can set the directory where your apps will be deployed  
+6. you can scale up your App with one command  
 
 ### Why PM2?
-PM2 is a process manager, that will restart your nodejs apps, just like forever - but:
-- PM2 has build in load balancing features
+PM2 is a process manager, that will run/restart Nodejs apps, just like forever - but:
+- PM2 has build in load balancing and scaling features
 - PM2 also runs bash / python / ruby / coffee / php / perl
-- PM2 has some more cool features
 - We tested PM2 with some of our complex Meteor apps and it performed well (while forever crashed them without any notable reasons)
 
 ### check out PM2 here: http://pm2.keymetrics.io/
@@ -23,7 +23,8 @@ PM2 is a process manager, that will restart your nodejs apps, just like forever 
 ```
 $ npm i -g pm2-meteor
 ```
-You should have nodejs, npm and pm2 installed on your machine. pm2-meteor wont install global tools. This is your job ;-)
+You should have Nodejs, npm and PM2 installed on your host machine.  
+pm2-meteor won't install global tools on your server! This is your job ;-)
 
 ## Usage
 ### 1. Init a pm2-meteor.json config file into an empty dir
@@ -76,6 +77,8 @@ $ pm2-meteor init
     "password": "trustno1",
     // or auth with pem file
     // "pem":"~/.ssh/id_rsa",
+    // optional set port
+    // "port": "22",
 
     // this dir will contain your apps
     // (app will be deployed to /opt/pm2-meteor/ninjaApp)
@@ -106,6 +109,22 @@ $ pm2 start pm2-env.json
 $ pm2-meteor start
 $ pm2-meteor stop
 $ pm2-meteor status
+```
+
+### 5. SCALE your app
+Start 2 more instances:
+```
+$ pm2-meteor scale +2
+```
+
+Shut-down 1 instance:
+```
+$ pm2-meteor scale -1
+```
+
+Down/Upgrade to 4 instances
+```
+$ pm2-meteor scale 4
 ```
 
 ## If you want to deploy the bundle by yourself

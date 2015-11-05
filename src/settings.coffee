@@ -18,7 +18,7 @@ module.exports =
       username: ""
       password: ""
       deploymentDir: "/opt/pm2-meteor"
-      exec_mode: "fork_mode"
+      exec_mode: "cluster_mode"
       instances: 1
   pm2EnvConfigName: "pm2-env.json"
   pm2EnvConfigTemplate:

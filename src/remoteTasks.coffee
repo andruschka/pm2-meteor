@@ -2,6 +2,7 @@ path = require 'path'
 nodemiral = require 'nodemiral'
 cli = require 'cli'
 fs = require 'fs'
+async = require 'async'
 _settings = require "./settings"
 CWD = process.cwd()
 abs = require "abs"
@@ -14,13 +15,20 @@ module.exports =
       username: pm2mConf.server.username
       password: pm2mConf.server.password if pm2mConf.server.password
       pem: fs.readFileSync(abs(pm2mConf.server.pem)) if pm2mConf.server.pem
+    ,
+      ssh:
+        port: pm2mConf.server.port if pm2mConf.server.port
     return session
   checkDeps: (session, done)->
-    session.execute "node --version && npm --version && pm2 --version", {}, (err, code, logs)->
+    checkCmd = "(command -v node || echo 'missing node' 1>&2) && (command -v npm || echo 'missing npm' 1>&2) && (command -v pm2 || echo 'missing pm2' 1>&2)"
+    session.execute checkCmd, {}, (err, code, logs)->
       if err
         done err
       else
-        if logs.stderr and logs.stderr.length > 0
+        if logs.stderr and logs.stderr.length > 0 and /.*missing.*/.test(logs.stderr)
+          console.log ""
+          console.log "*** DEBUG ***"
+          console.log logs.stderr
           done message: "Please make sure you have node, npm and pm2 installed on your remote machine!"
         else
           done()
@@ -88,6 +96,12 @@ module.exports =
         done()
       else
         done()
+  killApp: (session, pm2mConf, done)->
+    session.execute "pm2 delete #{pm2mConf.appName}", {}, (err, code, logs)->
+      if err
+        done err
+      else
+        done()
   reloadApp: (session, pm2mConf, done)->
     session.execute "cd #{getAppLocation(pm2mConf)} && pm2 delete #{pm2mConf.appName}", {}, (err, code, logs)->
       if err
@@ -102,3 +116,21 @@ module.exports =
             if logs.stderr
               console.log logs.stderr
             done()
+  deleteAppFolder: (session, pm2mConf, done)->
+    session.execute "rm -rf #{getAppLocation(pm2mConf)}", {}, (err, code, logs)->
+      if err
+        done err
+      else
+        if logs.stderr
+          console.log logs.stder
+        done()
+  scale: (session, pm2mConf, sParam, done)->
+    session.execute "pm2 scale #{pm2mConf.appName} #{sParam}", {}, (err, code, logs)->
+      if err
+        done err
+      else
+        if logs.stderr
+          console.log logs.stder
+        if logs.stdout
+          console.log logs.stdout
+        done()

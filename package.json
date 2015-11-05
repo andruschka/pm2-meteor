@@ -1,11 +1,12 @@
 {
   "name": "pm2-meteor",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "bin": "./lib/pm2-meteor",
-  "description": "Deploys your Meteor apps (from a git repo if you wish so) and runs 'em with pm2.",
+  "description": "Simplest way to deploy, scale and run Meteor Apps with PM2.",
   "main": "pm2-meteor.js",
   "scripts": {
-    "build": "coffee --output lib --compile src && echo '#!/usr/bin/env node' > lib/pm2-meteor && cat lib/pm2-meteor.js >> lib/pm2-meteor && chmod +x lib/pm2-meteor && rm lib/pm2-meteor.js"
+    "build": "coffee --output lib --compile src && echo '#!/usr/bin/env node' > lib/pm2-meteor && cat lib/pm2-meteor.js >> lib/pm2-meteor && chmod +x lib/pm2-meteor && rm lib/pm2-meteor.js",
+    "preinstall": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,9 @@
     "config",
     "deploy",
     "deployment",
-    "meteorite"
+    "meteorite",
+    "git deployment",
+    "nodejs"
   ],
   "author": "andruschka <fritz.andrej@me.com> (http://github.com/andruschka)",
   "license": "MIT",
@@ -29,6 +32,7 @@
     "abs": "^1.0.0",
     "async": "^1.4.2",
     "cli": "^0.11.0",
-    "nodemiral": "^1.1.1"
+    "nodemiral": "^1.1.1",
+    "commander": "^2.9.0"
   }
 }
