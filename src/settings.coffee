@@ -23,7 +23,7 @@ module.exports =
   pm2EnvConfigName: "pm2-env.json"
   pm2EnvConfigTemplate:
     apps: []
-  localBuildDir: ".build"
+  localBuildDir: "/tmp/pm2-meteor-builds"
   bundleTarName: "bundle.tar.gz"
   bundleName: "bundle"
   backupDir: "backup"

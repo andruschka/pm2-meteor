@@ -9,7 +9,7 @@ What is different about this tool:
 3. it uses PM2 to run your Meteor Apps  
 4. you pass the path to the Meteor settings file, instead of copy-pasting them  
 5. you can set the directory where your apps will be deployed  
-6. you can scale up your App with one command  
+6. you can scale your App in realtime with one command  
 
 ### Why PM2?
 PM2 is a process manager, that will run/restart Nodejs apps, just like forever - but:

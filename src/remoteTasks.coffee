@@ -101,12 +101,25 @@ module.exports =
         done err
       else
         done()
-  reloadApp: (session, pm2mConf, done)->
-    session.execute "cd #{getAppLocation(pm2mConf)} && pm2 delete #{pm2mConf.appName}", {}, (err, code, logs)->
+  reloadApp: (session, pm2mConf, reconfig, done)->
+    if reconfig
+      @hardReloadApp session, pm2mConf, done
+    else
+      @softReloadApp session, pm2mConf, done
+  softReloadApp: (session, pm2mConf, done)->
+    session.execute "cd #{getAppLocation(pm2mConf)} && pm2 startOrReload #{_settings.pm2EnvConfigName}", {}, (err, code, logs)->
       if err
         done err
       else
         if logs.stderr
+          console.log logs.stderr
+        done()
+  hardReloadApp: (session, pm2mConf, done)->
+    session.execute "cd #{getAppLocation(pm2mConf)} && pm2 delete #{pm2mConf.appName}", {}, (err, code, logs)->
+      if err
+        done err
+      else
+        if logs.sterr
           console.log logs.stderr
         session.execute "cd #{getAppLocation(pm2mConf)} && pm2 start #{_settings.pm2EnvConfigName}", {}, (err, code, logs)->
           if err

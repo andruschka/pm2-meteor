@@ -15,7 +15,7 @@ module.exports =
         cli.fatal "#{err.message}"
       else
         cli.spinner "#{_settings.pm2MeteorConfigName} created!", true
-  deploy: ()->
+  deploy: (reconfig)->
     cli.spinner "Building your app and deploying to host machine"
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
@@ -27,10 +27,7 @@ module.exports =
       (cb)->
         localTasks.generatePM2EnvironmentSettings pm2mConf, cb
       (cb)->
-        if !pm2mConf.appLocation.local or pm2mConf.appLocation.local.trim() is ""
-          localTasks.bundleApplicationFromGit pm2mConf, cb
-        else
-          localTasks.bundleApplication pm2mConf, cb
+        localTasks.bundleApplication pm2mConf, cb
       (cb)->
         remoteTasks.backupLastTar session, pm2mConf, cb
       (cb)->
@@ -40,7 +37,7 @@ module.exports =
       (cb)->
         remoteTasks.installBundleDeps session, pm2mConf, cb
       (cb)->
-        remoteTasks.reloadApp session, pm2mConf, cb
+        remoteTasks.reloadApp session, pm2mConf, reconfig, cb
     ], (err)->
       cli.spinner "", true
       if err
@@ -86,10 +83,7 @@ module.exports =
       (cb)->
         localTasks.generatePM2EnvironmentSettings pm2mConf, cb
       (cb)->
-        if !pm2mConf.appLocation.local or pm2mConf.appLocation.local.trim() is ""
-          localTasks.bundleApplicationFromGit pm2mConf, cb
-        else
-          localTasks.bundleApplication pm2mConf, cb
+        localTasks.bundleApplication pm2mConf, cb
       (cb)->
         localTasks.makeCleanAndLeaveBundle cb
     ], (err)->

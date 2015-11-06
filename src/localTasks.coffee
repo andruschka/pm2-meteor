@@ -30,6 +30,8 @@ reapplyMeteorSettings = (pm2mConf)->
         return false
   return true
 
+getAppSrc =
+
 # Local tasks
 module.exports =
   initPM2MeteorSettings: (done)->
@@ -67,8 +69,12 @@ module.exports =
     catch err
       done message: "#{err.message}"
     done()
-
   bundleApplication: (pm2mConf, done)->
+    if isGitProject pm2mConf
+      @bundleGitApplication pm2mConf, done
+    else
+      @bundleLocalApplication pm2mConf, done
+  bundleLocalApplication: (pm2mConf, done)->
     buildScript = ""
     if pm2mConf.prebuildScript and pm2mConf.prebuildScript.trim() isnt ""
       buildScript  += "cd #{abs(pm2mConf.appLocation.local)} && #{pm2mConf.prebuildScript} && "
@@ -83,7 +89,7 @@ module.exports =
             done err
           else
             done()
-  bundleApplicationFromGit: (pm2mConf, done)->
+  bundleGitApplication: (pm2mConf, done)->
     exec "cd #{CWD} && git clone #{pm2mConf.appLocation.git} --branch #{pm2mConf.appLocation.branch} #{_settings.gitDirName}", (err, stdout, stderr)->
       if err
         done err

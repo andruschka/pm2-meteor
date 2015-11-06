@@ -8,42 +8,43 @@ program
 program
   .command('init')
   .description("init a pm2-meteor settings file")
-  .action (instances)->
+  .action ()->
     cmds["init"]()
 program
   .command('deploy')
   .description('deploy your App to the server(s)')
-  .action (instances)->
-    cmds["deploy"]()
+  .option('-r, --reconfig', "Settings have changed and PM2 should reset the env")
+  .action ()->
+    cmds["deploy"](this.reconfig)
 program
   .command('start')
   .description('start your App on the server(s)')
-  .action (instances)->
+  .action ()->
     cmds["start"]()
 program
   .command('stop')
   .description('stop your App on the server(s)')
-  .action (instances)->
+  .action ()->
     cmds["stop"]()
 program
   .command('status')
   .description('print the status of your App (nodes)')
-  .action (instances)->
+  .action ()->
     cmds["status"]()
 program
   .command('generateBundle')
   .description('generates a tarball, containing the Nodejs build and a pm2-env.json file')
-  .action (instances)->
+  .action ()->
     cmds["generateBundle"]()
 program
   .command('undeploy')
   .description('undeploy your App from the server(s) - DANGEROUS!')
-  .action (instances)->
+  .action ()->
     cmds["undeploy"]()
 program
   .command('logs')
   .description('stream realtime logs for App')
-  .action (instances)->
+  .action ()->
     cmds["logs"]()
 program
   .command('scale <instances>')
