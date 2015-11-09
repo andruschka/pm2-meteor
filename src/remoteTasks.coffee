@@ -20,7 +20,7 @@ module.exports =
         port: pm2mConf.server.port if pm2mConf.server.port
     return session
   checkDeps: (session, done)->
-    checkCmd = "(command -v node || echo 'missing node' 1>&2) && (command -v npm || echo 'missing npm' 1>&2) && (command -v pm2 || echo 'missing pm2' 1>&2)"
+    checkCmd = "(command -v node || echo 'missing node' 1>&2) && (command -v npm || echo 'missing npm' 1>&2) && (command -v pm2 || echo 'missing pm2' 1>&2) && (command -v git || echo 'missing git' 1>&2)"
     session.execute checkCmd, {}, (err, code, logs)->
       if err
         done err
@@ -28,7 +28,7 @@ module.exports =
         if logs.stderr and logs.stderr.length > 0 and /.*missing.*/.test(logs.stderr)
           console.log ""
           console.log logs.stderr
-          done message: "Please make sure you have node, npm and pm2 installed on your remote machine!"
+          done message: "Please make sure you have node, npm, pm2 and git installed on your remote machine!"
         else
           done()
   prepareHost: (session, pm2mConf, done)->
