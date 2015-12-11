@@ -125,3 +125,38 @@ module.exports =
     remoteTasks.getAppLogs session, pm2mConf, (err)->
       if err
         cli.fatal "#{err.message}"
+  revert: ()->
+    pm2mConf = commonTasks.readPM2MeteorConfig()
+    session = remoteTasks.getRemoteSession pm2mConf
+    async.series [
+      (cb)->
+        remoteTasks.revertToBackup session, pm2mConf, cb
+      (cb)->
+        remoteTasks.extractTarBall session, pm2mConf, cb
+      (cb)->
+        remoteTasks.installBundleDeps session, pm2mConf, cb
+      (cb)->
+        remoteTasks.reloadApp session, pm2mConf, true, cb
+    ], (err)->
+      cli.spinner "", true
+      if err
+        cli.fatal "#{err.message}"
+      else
+        cli.ok "Reverted and hard-restarted your app."
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

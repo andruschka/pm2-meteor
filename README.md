@@ -102,13 +102,12 @@ $ pm2-meteor init
 $ pm2-meteor deploy
 ```
 If you already have deployed this app before, the old app tar-bundle will be moved to a ./backup directory.  
-If something goes wrong - ssh to your host and:
+
+##### If something goes wrong: revert to previous version
 ```
-$ cd /opt/pm2-meteor/ninjaApp && rm -rf bundle
-$ cd backup && tar -xf bundle.tar.gz -C ../
-$ cd ../ && pm2 delete ninjaApp
-$ pm2 start pm2-env.json
+$ pm2-meteor revert
 ```
+Will unzip the old bundle.tar.gz and restart the app
 
 ### 4. Control your app
 ```

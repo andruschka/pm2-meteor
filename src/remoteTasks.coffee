@@ -6,7 +6,9 @@ async = require 'async'
 _settings = require "./settings"
 CWD = process.cwd()
 abs = require "abs"
+
 getAppLocation = (pm2mConf)->  path.join pm2mConf.server.deploymentDir, pm2mConf.appName
+getBackupLocation = (pm2mConf)-> path.join getAppLocation(pm2mConf), _settings.backupDir
 
 # Remote tasks
 module.exports =
@@ -154,3 +156,29 @@ module.exports =
       else
         if logs.stderr
           done message: logs.stderr
+  revertToBackup: (session, pm2mConf, done)->
+    appLocation = getAppLocation pm2mConf
+    backupLocation = getBackupLocation pm2mConf
+    cmd = "mv #{path.join backupLocation, _settings.bundleTarName} #{path.join appLocation, _settings.bundleTarName}"
+    console.log "executing #{cmd}"
+    session.execute cmd, {}, (err, code, logs)->
+      if err
+        done err
+      else
+        if logs.stderr
+          console.log "*** stderr while reverting to backup ***"
+          done message: logs.stderr
+        if logs.stdout
+          console.log logs.stdout
+        done()
+
+
+
+
+
+
+
+
+
+
+

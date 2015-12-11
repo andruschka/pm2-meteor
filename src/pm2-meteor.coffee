@@ -47,6 +47,11 @@ program
   .action ()->
     cmds["logs"]()
 program
+  .command('revert')
+  .description('revert to previous version')
+  .action ()->
+    cmds["revert"]()
+program
   .command('scale <instances>')
   .description('scale App to number-of-instances')
   .action( (instances)->

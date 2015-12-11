@@ -1,11 +1,12 @@
 {
   "name": "pm2-meteor",
-  "version": "0.3.2",
-  "bin": "./lib/pm2-meteor",
+  "version": "0.3.3",
+  "bin": "lib/program.js",
   "description": "Simplest way to deploy, scale and run Meteor Apps with PM2.",
-  "main": "pm2-meteor.js",
+  "main": "lib/pm2-meteor.js",
   "scripts": {
-    "build": "coffee --output lib --compile src && echo '#!/usr/bin/env node' > lib/pm2-meteor && cat lib/pm2-meteor.js >> lib/pm2-meteor && chmod +x lib/pm2-meteor && rm lib/pm2-meteor.js"
+    "prepublish": "make build",
+    "build": "make build"
   },
   "repository": {
     "type": "git",
