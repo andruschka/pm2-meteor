@@ -18,6 +18,7 @@ module.exports =
       username: ""
       password: ""
       deploymentDir: "/opt/pm2-meteor"
+      loadProfile: ""
       exec_mode: "cluster_mode"
       instances: 1
   pm2EnvConfigName: "pm2-env.json"

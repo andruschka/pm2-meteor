@@ -21,6 +21,16 @@ module.exports =
       ssh:
         port: pm2mConf.server.port if pm2mConf.server.port
     return session
+  loadProfile: (session, pm2mConf, done)->
+    if pm2mConf.server?.loadProfile
+      loadCmd = ". #{pm2mConf.server.loadProfile}"
+      session.execute loadCmd, {}, (err, code, logs)->
+        if err
+          done err
+        else
+          done()
+    else
+      done()
   checkDeps: (session, done)->
     checkCmd = "(command -v node || echo 'missing node' 1>&2) && (command -v npm || echo 'missing npm' 1>&2) && (command -v pm2 || echo 'missing pm2' 1>&2)"
     session.execute checkCmd, {}, (err, code, logs)->
@@ -171,14 +181,6 @@ module.exports =
         if logs.stdout
           console.log logs.stdout
         done()
-
-
-
-
-
-
-
-
 
 
 

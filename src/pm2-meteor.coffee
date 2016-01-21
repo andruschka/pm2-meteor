@@ -1,9 +1,10 @@
 # cli = require 'cli'
 program = require 'commander'
 cmds = require './commandList'
+{version: currentVersion} = require('../package.json')
 
 program
-  .version('0.3.0')
+  .version("#{currentVersion}")
 
 program
   .command('init')

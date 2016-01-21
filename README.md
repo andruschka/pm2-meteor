@@ -87,7 +87,10 @@ $ pm2-meteor init
     // this dir will contain your apps
     // (app will be deployed to /opt/pm2-meteor/ninjaApp)
     "deploymentDir": "/opt/pm2-meteor",
-
+    
+    // will source a profile before executing tasks on the server
+    "loadProfile": "",
+    
     // exec mode for pm2
     "exec_mode": "cluster_mode",
     "instances": 2

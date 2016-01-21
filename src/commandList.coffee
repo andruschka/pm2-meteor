@@ -21,6 +21,8 @@ module.exports =
     session = remoteTasks.getRemoteSession pm2mConf
     async.series [
       (cb)->
+        remoteTasks.loadProfile session, pm2mConf, cb
+      (cb)->
         remoteTasks.checkDeps session, cb
       (cb)->
         remoteTasks.prepareHost session, pm2mConf, cb
@@ -50,7 +52,12 @@ module.exports =
     cli.spinner "Starting app on host machine"
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
-    remoteTasks.startApp session, pm2mConf, (err)->
+    async.series [
+      (cb)->
+        remoteTasks.loadProfile session, pm2mConf, cb
+      (cb)->
+        remoteTasks.startApp session, pm2mConf, cb
+    ], (err)->
       cli.spinner "", true
       if err
         cli.fatal "#{err.message}"
@@ -60,7 +67,12 @@ module.exports =
     cli.spinner "Stopping app on host machine"
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
-    remoteTasks.stopApp session, pm2mConf, (err)->
+    async.series [
+      (cb)->
+        remoteTasks.loadProfile session, pm2mConf, cb
+      (cb)->
+        remoteTasks.stopApp session, pm2mConf, cb
+    ], (err)->
       cli.spinner "", true
       if err
         cli.fatal "#{err.message}"
@@ -70,7 +82,12 @@ module.exports =
     cli.spinner "Checking status"
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
-    remoteTasks.status session, pm2mConf, (err, result)->
+    async.series [
+      (cb)->
+        remoteTasks.loadProfile session, pm2mConf, cb
+      (cb)->
+        remoteTasks.status session, pm2mConf, cb
+    ], (err, result)->
       cli.spinner "", true
       if err
         cli.fatal "#{err.message}"
@@ -100,6 +117,8 @@ module.exports =
     session = remoteTasks.getRemoteSession pm2mConf
     async.series [
       (cb)->
+        remoteTasks.loadProfile session, pm2mConf, cb
+      (cb)->
         remoteTasks.killApp session, pm2mConf, cb
       (cb)->
         remoteTasks.deleteAppFolder session, pm2mConf, cb
@@ -113,7 +132,12 @@ module.exports =
     cli.spinner "Scaling your App"
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
-    remoteTasks.scaleApp session, pm2mConf, opts, (err)->
+    async.series [
+      (cb)->
+        remoteTasks.loadProfile session, pm2mConf, cb
+      (cb)->
+        remoteTasks.scaleApp session, pm2mConf, opts, cb
+    ], (err)->
       cli.spinner "", true
       if err
         cli.fatal "#{err.message}"
@@ -122,13 +146,20 @@ module.exports =
   logs: ()->
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
-    remoteTasks.getAppLogs session, pm2mConf, (err)->
+    async.series [
+      (cb)->
+        remoteTasks.loadProfile session, pm2mConf, cb
+      (cb)->
+        remoteTasks.getAppLogs session, pm2mConf, cb
+    ], (err)->
       if err
         cli.fatal "#{err.message}"
   revert: ()->
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
     async.series [
+      (cb)->
+        remoteTasks.loadProfile session, pm2mConf, cb
       (cb)->
         remoteTasks.revertToBackup session, pm2mConf, cb
       (cb)->
