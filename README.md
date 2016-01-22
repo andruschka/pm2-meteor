@@ -81,21 +81,29 @@ $ pm2-meteor init
     "password": "trustno1",
     // or auth with pem file
     // "pem":"~/.ssh/id_rsa",
-    // optional set port
+    // optional - set port
     // "port": "22",
 
     // this dir will contain your apps
     // (app will be deployed to /opt/pm2-meteor/ninjaApp)
     "deploymentDir": "/opt/pm2-meteor",
     
-    // will source a profile before executing tasks on the server
-    "loadProfile": "",
+    // optional - will source a profile before executing tasks on the server
+    // "loadProfile": "",
     
+    // optional - NVM Support
+    // if you are using nvm - make sure to fill out bin ("~/.nvm/nvm.sh" in most cases)
+    // ! using multiple node versions - coming soon !
+    // "nvm": {
+    //    "bin": "",
+    //    "use": ""
+    // },
+
     // exec mode for pm2
     "exec_mode": "cluster_mode",
     "instances": 2
   },
-  // set this one if you want to undeploy your app
+  // optional - set this one if you want to undeploy your app
   // "allowUndeploy": true
 }
 ```

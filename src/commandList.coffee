@@ -21,9 +21,7 @@ module.exports =
     session = remoteTasks.getRemoteSession pm2mConf
     async.series [
       (cb)->
-        remoteTasks.loadProfile session, pm2mConf, cb
-      (cb)->
-        remoteTasks.checkDeps session, cb
+        remoteTasks.checkDeps session, pm2mConf, cb
       (cb)->
         remoteTasks.prepareHost session, pm2mConf, cb
       (cb)->
@@ -54,8 +52,6 @@ module.exports =
     session = remoteTasks.getRemoteSession pm2mConf
     async.series [
       (cb)->
-        remoteTasks.loadProfile session, pm2mConf, cb
-      (cb)->
         remoteTasks.startApp session, pm2mConf, cb
     ], (err)->
       cli.spinner "", true
@@ -69,8 +65,6 @@ module.exports =
     session = remoteTasks.getRemoteSession pm2mConf
     async.series [
       (cb)->
-        remoteTasks.loadProfile session, pm2mConf, cb
-      (cb)->
         remoteTasks.stopApp session, pm2mConf, cb
     ], (err)->
       cli.spinner "", true
@@ -83,8 +77,6 @@ module.exports =
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
     async.series [
-      (cb)->
-        remoteTasks.loadProfile session, pm2mConf, cb
       (cb)->
         remoteTasks.status session, pm2mConf, cb
     ], (err, result)->
@@ -117,8 +109,6 @@ module.exports =
     session = remoteTasks.getRemoteSession pm2mConf
     async.series [
       (cb)->
-        remoteTasks.loadProfile session, pm2mConf, cb
-      (cb)->
         remoteTasks.killApp session, pm2mConf, cb
       (cb)->
         remoteTasks.deleteAppFolder session, pm2mConf, cb
@@ -134,8 +124,6 @@ module.exports =
     session = remoteTasks.getRemoteSession pm2mConf
     async.series [
       (cb)->
-        remoteTasks.loadProfile session, pm2mConf, cb
-      (cb)->
         remoteTasks.scaleApp session, pm2mConf, opts, cb
     ], (err)->
       cli.spinner "", true
@@ -148,8 +136,6 @@ module.exports =
     session = remoteTasks.getRemoteSession pm2mConf
     async.series [
       (cb)->
-        remoteTasks.loadProfile session, pm2mConf, cb
-      (cb)->
         remoteTasks.getAppLogs session, pm2mConf, cb
     ], (err)->
       if err
@@ -158,8 +144,6 @@ module.exports =
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
     async.series [
-      (cb)->
-        remoteTasks.loadProfile session, pm2mConf, cb
       (cb)->
         remoteTasks.revertToBackup session, pm2mConf, cb
       (cb)->

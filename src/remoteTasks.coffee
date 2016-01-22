@@ -10,6 +10,34 @@ abs = require "abs"
 getAppLocation = (pm2mConf)->  path.join pm2mConf.server.deploymentDir, pm2mConf.appName
 getBackupLocation = (pm2mConf)-> path.join getAppLocation(pm2mConf), _settings.backupDir
 
+class BashCmd
+  appendCmd = (cmd1, cmd2)->
+    if cmd1
+      return "#{cmd1} && #{cmd2}"
+    else
+      return "#{cmd2}"
+  constructor: (pm2mConf, rawCmd) ->
+    if pm2mConf and rawCmd
+      @pm2mConf = pm2mConf
+      @rawCmd = rawCmd
+    else
+      throw new Error "You must pass a pm2mConf and a Command string..."
+  getString: ()->
+    {loadProfile, nvm} = @pm2mConf.server
+    result = ""
+    if loadProfile
+      result = appendCmd result, "[[ -r #{loadProfile} ]] && . #{loadProfile}"
+    if nvm
+      if nvm.bin
+        result = appendCmd result, "[[ -r #{nvm.bin} ]] && . #{nvm.bin}"
+        # if nvm.use
+        #   result = appendCmd result, "nvm use #{nvm.use}"
+    result = appendCmd result, @rawCmd
+    return result
+
+cmdString = (pm2mConf, cmd)-> 
+  new BashCmd(pm2mConf, cmd).getString()
+
 # Remote tasks
 module.exports =
   getRemoteSession: (pm2mConf)->
@@ -21,19 +49,9 @@ module.exports =
       ssh:
         port: pm2mConf.server.port if pm2mConf.server.port
     return session
-  loadProfile: (session, pm2mConf, done)->
-    if pm2mConf.server?.loadProfile
-      loadCmd = ". #{pm2mConf.server.loadProfile}"
-      session.execute loadCmd, {}, (err, code, logs)->
-        if err
-          done err
-        else
-          done()
-    else
-      done()
-  checkDeps: (session, done)->
-    checkCmd = "(command -v node || echo 'missing node' 1>&2) && (command -v npm || echo 'missing npm' 1>&2) && (command -v pm2 || echo 'missing pm2' 1>&2)"
-    session.execute checkCmd, {}, (err, code, logs)->
+  checkDeps: (session, pm2mConf, done)->
+    cmd = cmdString pm2mConf, "(command -v node || echo 'missing node' 1>&2) && (command -v npm || echo 'missing npm' 1>&2) && (command -v pm2 || echo 'missing pm2' 1>&2)"
+    session.execute cmd, {}, (err, code, logs)->
       if err
         done err
       else
@@ -44,7 +62,8 @@ module.exports =
         else
           done()
   prepareHost: (session, pm2mConf, done)->
-    session.execute "mkdir -p #{path.join getAppLocation(pm2mConf), _settings.backupDir}", {}, (err,code,logs)->
+    cmd = cmdString pm2mConf, "mkdir -p #{path.join getAppLocation(pm2mConf), _settings.backupDir}"
+    session.execute cmd, {}, (err,code,logs)->
       if err
         done err
       else
@@ -62,20 +81,23 @@ module.exports =
       else
         done()
   extractTarBall: (session, pm2mConf, done)->
-    session.execute "cd #{getAppLocation(pm2mConf)} && rm -rf #{_settings.bundleName} && tar -xf #{_settings.bundleTarName}", {}, (err, code, logs)->
+    cmd = cmdString pm2mConf, "cd #{getAppLocation(pm2mConf)} && rm -rf #{_settings.bundleName} && tar -xf #{_settings.bundleTarName}"
+    session.execute cmd, {}, (err, code, logs)->
       if err
         done err
       else
         done()
   installBundleDeps: (session, pm2mConf, done)->
     serverLocation = path.join getAppLocation(pm2mConf), _settings.bundleName, "/programs/server"
-    session.execute "cd #{serverLocation} && npm i", {}, (err, code, logs)->
+    cmd = cmdString pm2mConf, "cd #{serverLocation} && node --version && npm i ."
+    session.execute cmd, {}, (err, code, logs)->
       if err
         done err
       else
         done()
   startApp: (session, pm2mConf, done)->
-    session.execute "cd #{getAppLocation(pm2mConf)} && pm2 start #{_settings.pm2EnvConfigName}", {}, (err, code, logs)->
+    cmd = cmdString pm2mConf, "cd #{getAppLocation(pm2mConf)} && pm2 start #{_settings.pm2EnvConfigName}"
+    session.execute cmd, {}, (err, code, logs)->
       if err
         done err
       else
@@ -83,7 +105,8 @@ module.exports =
           done message: logs.stderr
         done()
   stopApp: (session, pm2mConf, done)->
-    session.execute "cd #{getAppLocation(pm2mConf)} && pm2 stop #{_settings.pm2EnvConfigName}", {}, (err, code, logs)->
+    cmd = cmdString pm2mConf, "cd #{getAppLocation(pm2mConf)} && pm2 stop #{_settings.pm2EnvConfigName}"
+    session.execute cmd, {}, (err, code, logs)->
       if err
         done err
       else
@@ -92,7 +115,8 @@ module.exports =
         done()
 
   status: (session, pm2mConf, done)->
-    session.execute "pm2 show #{pm2mConf.appName}", {}, (err, code, logs)->
+    cmd = cmdString pm2mConf, "pm2 show #{pm2mConf.appName}"
+    session.execute cmd, {}, (err, code, logs)->
       if err
         done err
       else
@@ -102,13 +126,15 @@ module.exports =
           done(null, logs.stdout)
 
   backupLastTar: (session, pm2mConf, done)->
-    session.execute "cd #{getAppLocation(pm2mConf)} && mv #{_settings.bundleTarName} backup/ 2>/dev/null", {}, (err, code, logs)->
+    cmd = cmdString pm2mConf, "cd #{getAppLocation(pm2mConf)} && mv #{_settings.bundleTarName} backup/ 2>/dev/null"
+    session.execute cmd, {}, (err, code, logs)->
       if err
         done()
       else
         done()
   killApp: (session, pm2mConf, done)->
-    session.execute "pm2 delete #{pm2mConf.appName}", {}, (err, code, logs)->
+    cmd = cmdString pm2mConf, "pm2 delete #{pm2mConf.appName}"
+    session.execute cmd, {}, (err, code, logs)->
       if err
         done err
       else
@@ -119,7 +145,8 @@ module.exports =
     else
       @softReloadApp session, pm2mConf, done
   softReloadApp: (session, pm2mConf, done)->
-    session.execute "cd #{getAppLocation(pm2mConf)} && pm2 startOrReload #{_settings.pm2EnvConfigName}", {}, (err, code, logs)->
+    cmd = cmdString pm2mConf, "cd #{getAppLocation(pm2mConf)} && pm2 startOrReload #{_settings.pm2EnvConfigName}"
+    session.execute cmd, {}, (err, code, logs)->
       if err
         done err
       else
@@ -127,13 +154,15 @@ module.exports =
           console.log logs.stderr
         done()
   hardReloadApp: (session, pm2mConf, done)->
-    session.execute "cd #{getAppLocation(pm2mConf)} && pm2 delete #{pm2mConf.appName}", {}, (err, code, logs)->
+    cmd1 = cmdString pm2mConf, "cd #{getAppLocation(pm2mConf)} && pm2 delete #{pm2mConf.appName}"
+    session.execute cmd1, {}, (err, code, logs)->
       if err
         done err
       else
         if logs.sterr
           console.log logs.stderr
-        session.execute "cd #{getAppLocation(pm2mConf)} && pm2 start #{_settings.pm2EnvConfigName}", {}, (err, code, logs)->
+        cmd2 = cmdString pm2mConf, "cd #{getAppLocation(pm2mConf)} && pm2 start #{_settings.pm2EnvConfigName}"
+        session.execute cmd2, {}, (err, code, logs)->
           if err
             done err
           else
@@ -141,7 +170,8 @@ module.exports =
               console.log logs.stderr
             done()
   deleteAppFolder: (session, pm2mConf, done)->
-    session.execute "rm -rf #{getAppLocation(pm2mConf)}", {}, (err, code, logs)->
+    cmd = cmdString pm2mConf, "rm -rf #{getAppLocation(pm2mConf)}"
+    session.execute cmd, {}, (err, code, logs)->
       if err
         done err
       else
@@ -149,8 +179,8 @@ module.exports =
           console.log logs.stder
         done()
   scaleApp: (session, pm2mConf, sParam, done)->
-    scaleCmd = "pm2 scale #{pm2mConf.appName} #{sParam}"
-    session.execute scaleCmd, {}, (err, code, logs)->
+    cmd = cmdString pm2mConf, "pm2 scale #{pm2mConf.appName} #{sParam}"
+    session.execute cmd, {}, (err, code, logs)->
       if err
         done err
       else
@@ -160,7 +190,8 @@ module.exports =
           console.log logs.stdout
         done()
   getAppLogs: (session, pm2mConf, done)->
-    session.execute "pm2 logs #{pm2mConf.appName}", {onStdout: console.log}, (err, code, logs)->
+    cmd = cmdString pm2mConf, "pm2 logs #{pm2mConf.appName}"
+    session.execute cmd, {onStdout: console.log}, (err, code, logs)->
       if err
         done err
       else
@@ -169,7 +200,7 @@ module.exports =
   revertToBackup: (session, pm2mConf, done)->
     appLocation = getAppLocation pm2mConf
     backupLocation = getBackupLocation pm2mConf
-    cmd = "mv #{path.join backupLocation, _settings.bundleTarName} #{path.join appLocation, _settings.bundleTarName}"
+    cmd = cmdString pm2mConf, "mv #{path.join backupLocation, _settings.bundleTarName} #{path.join appLocation, _settings.bundleTarName}"
     console.log "executing #{cmd}"
     session.execute cmd, {}, (err, code, logs)->
       if err
