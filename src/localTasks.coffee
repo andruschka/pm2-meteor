@@ -14,7 +14,7 @@ isGitProject = (pm2mConf)->
     return false
 
 reapplyMeteorSettings = (pm2mConf)->
-  if isGitProject pm2mConf
+  if isGitProject(pm2mConf) and pm2mConf.meteorSettingsInRepo
     if pm2mConf.meteorSettingsLocation and pm2mConf.meteorSettingsLocation isnt ""
       meteorSettingsObj = {}
       meteorSettingsLocation = path.join CWD, _settings.gitDirName, pm2mConf.meteorSettingsLocation
@@ -54,13 +54,12 @@ module.exports =
     appJson.instances = pm2mConf.server.instances
     # get Meteor settings
     meteorSettingsObj = {}
-    unless isGitProject pm2mConf
-      if pm2mConf.meteorSettingsLocation
-        try
-          meteorSettingsLocation = abs(pm2mConf.meteorSettingsLocation)
-          meteorSettingsObj = JSON.parse(fs.readFileSync meteorSettingsLocation, 'utf8')
-        catch err
-          done err
+    if pm2mConf.meteorSettingsLocation and !pm2mConf.meteorSettingsInRepo
+      try
+        meteorSettingsLocation = abs(pm2mConf.meteorSettingsLocation)
+        meteorSettingsObj = JSON.parse(fs.readFileSync meteorSettingsLocation, 'utf8')
+      catch err
+        done err
     appJson.env["METEOR_SETTINGS"] = meteorSettingsObj
     envJson.apps.push appJson
     prettyJson = JSON.stringify(envJson, null, 2)

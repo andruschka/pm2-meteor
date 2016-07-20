@@ -7,6 +7,7 @@ module.exports =
       git: ""
       branch: "master"
     meteorSettingsLocation: ""
+    meteorSettingsInRepo: false
     prebuildScript: ""
     meteorBuildFlags: ""
     env:

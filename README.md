@@ -1,6 +1,8 @@
 # pm2-meteor
 A CLI tool, that will deploy your Meteor app (from your dev machine or from git) as Nodejs bundle and run it with PM2. (tested with Ubuntu and Freebsd hosts)
 
+### -> Tutorial coming soon!
+
 ## A friendly info
 This tool is still under construction and we will continue adding features.  
 What is different about this tool:  
@@ -55,8 +57,10 @@ $ pm2-meteor init
 
   // where the meteor settings are located
   "meteorSettingsLocation":"~/Workspace/ninjaApp/settings/production.json",
-  // or RELATIVE to app root, if you are deploying with git
+  "meteorSettingsInRepo": false,
+  // or RELATIVE to app root, if settings are located in git repo (this is not a good idea...)
   // "meteorSettingsLocation":"settings/production.json",
+  // "meteorSettingsInRepo": true,
 
   // build flags for Meteor
   "meteorBuildFlags": "--architecture os.linux.x86_64"
@@ -87,10 +91,10 @@ $ pm2-meteor init
     // this dir will contain your apps
     // (app will be deployed to /opt/pm2-meteor/ninjaApp)
     "deploymentDir": "/opt/pm2-meteor",
-    
+
     // optional - will source a profile before executing tasks on the server
     // "loadProfile": "",
-    
+
     // optional - NVM Support
     // if you are using nvm - make sure to fill out bin ("~/.nvm/nvm.sh" in most cases)
     // ! using multiple node versions - coming soon !
