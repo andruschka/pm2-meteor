@@ -1,7 +1,7 @@
 # pm2-meteor
 A CLI tool, that will deploy your Meteor app (from your dev machine or from git) as Nodejs bundle and run it with PM2. (tested with Ubuntu and Freebsd hosts)
 
-### -> Tutorial coming soon!
+### Checkout [this short tutorial](http://pm2-meteor.betawerk.co/) - so it is kind of a collection of some links for setting up everything with some extra steps. (This is how we setup our Meteor machines - so if this works for us - maybe it will for you ;-) )
 
 ## A friendly info
 This tool is still under construction and we will continue adding features.  
