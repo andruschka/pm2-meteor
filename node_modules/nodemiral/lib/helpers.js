@@ -1,0 +1,11 @@
+module.exports.randomId = function randomId(noOfTexts) {
+  noOfTexts = noOfTexts || 17;
+  
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for( var i=0; i < noOfTexts; i++ ) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+};
