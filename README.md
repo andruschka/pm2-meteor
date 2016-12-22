@@ -109,6 +109,9 @@ $ pm2-meteor init
   },
   // optional - set this one if you want to undeploy your app
   // "allowUndeploy": true
+
+  // optional - set this if you want to specify timestamps to the pm2 log-files
+  // "log_date_format": "YYYY-MM-DD HH:mm Z"
 }
 ```
 
