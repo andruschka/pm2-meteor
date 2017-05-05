@@ -18,6 +18,11 @@ program
   .action ()->
     cmds["deploy"](this.reconfig)
 program
+  .command('reconfig')
+  .description('deploy only new settings and env vars')
+  .action ()->
+    cmds["reconfig"]()
+program
   .command('start')
   .description('start your App on the server(s)')
   .action ()->

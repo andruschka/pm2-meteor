@@ -44,6 +44,25 @@ module.exports =
       else
         localTasks.makeClean (err)-> cli.error err if err
         cli.ok "Deployed your app on the host machine!"
+  reconfig: ()->
+    cli.spinner "Deploying new env"
+    pm2mConf = commonTasks.readPM2MeteorConfig()
+    session = remoteTasks.getRemoteSession pm2mConf
+    async.series [
+      (cb)->
+        localTasks.generatePM2EnvironmentSettings pm2mConf, cb
+      (cb)->
+        remoteTasks.shipSettings session, pm2mConf, cb
+      (cb)->
+        remoteTasks.reloadApp session, pm2mConf, true, cb
+    ], (err)->
+      cli.spinner "", true
+      if err
+        localTasks.makeClean (err)-> clie.error(err) if err
+        cli.fatal "#{err.message}"
+      else
+        localTasks.makeClean (err)-> clie.error(err) if err
+        cli.ok "Deployed new env settings"
   start: ()->
     cli.spinner "Starting app on host machine"
     pm2mConf = commonTasks.readPM2MeteorConfig()

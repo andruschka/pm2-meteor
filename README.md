@@ -121,11 +121,18 @@ $ pm2-meteor deploy
 ```
 If you already have deployed this app before, the old app tar-bundle will be moved to a ./backup directory.  
 
+##### If you want to only deploy settings / env changes
+```
+$ pm2-meteor reconfig
+```
+Will send new pm2-env file to server and hard-restart your app.
+
 ##### If something goes wrong: revert to previous version
 ```
 $ pm2-meteor revert
 ```
 Will unzip the old bundle.tar.gz and restart the app
+
 
 ### 4. Control your app
 ```

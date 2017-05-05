@@ -35,7 +35,7 @@ class BashCmd
     result = appendCmd result, @rawCmd
     return result
 
-cmdString = (pm2mConf, cmd)-> 
+cmdString = (pm2mConf, cmd)->
   new BashCmd(pm2mConf, cmd).getString()
 
 # Remote tasks
@@ -76,6 +76,16 @@ module.exports =
     console.log tarLocation
     console.log destination
     session.copy tarLocation, destination, {progressBar: true} , (err, code, logs)->
+      if err
+        done err
+      else
+        done()
+  shipSettings: (session, pm2mConf, done)->
+    fileLocation = path.join CWD, _settings.pm2EnvConfigName
+    destination = path.join getAppLocation(pm2mConf), _settings.pm2EnvConfigName
+    console.log fileLocation
+    console.log destination
+    session.copy fileLocation, destination, {progressBar: true} , (err, code, logs)->
       if err
         done err
       else
@@ -212,6 +222,3 @@ module.exports =
         if logs.stdout
           console.log logs.stdout
         done()
-
-
-
