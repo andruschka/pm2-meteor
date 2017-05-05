@@ -4,6 +4,7 @@ path = require 'path'
 nodemiral = require 'nodemiral'
 url = require 'url'
 abs = require 'abs'
+inquirer = require 'inquirer'
 _settings = require './settings'
 CWD = process.cwd()
 
@@ -36,12 +37,22 @@ getAppSrc =
 module.exports =
   initPM2MeteorSettings: (done)->
     json = _settings.pm2MeteorConfigTemplate
-    prettyJson = JSON.stringify(json, null, 2)
-    try
-      fs.writeFileSync _settings.pm2MeteorConfigName, prettyJson
-    catch err
-      done err
-    done()
+    questions = _settings.inquirerQuestions
+    prompt = inquirer.createPromptModule()
+    p = prompt(questions)
+    p.then (answers)->
+      { appName, appLocation, meteorSettingsLocation, meteorBuildFlags } = answers
+      { rootURL: ROOT_URL, port: PORT, mongoURL: MONGO_URL } = answers
+      { serverHost: host, serverUsername: username, serverPassword: password, serverInstances: instances } = answers
+      json = Object.assign json, { appName, appLocation, meteorSettingsLocation, meteorBuildFlags }
+      json.env = Object.assign json.env, { ROOT_URL, PORT, MONGO_URL }
+      json.server = Object.assign json.server, { host, username, password, instances }
+      prettyJson = JSON.stringify json, null, 2
+      try
+        fs.writeFileSync _settings.pm2MeteorConfigName, prettyJson
+      catch err
+        done err
+      done()
 
   generatePM2EnvironmentSettings: (pm2mConf, done)->
     envJson = _settings.pm2EnvConfigTemplate

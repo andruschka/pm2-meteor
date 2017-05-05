@@ -66,4 +66,5 @@ program.on '--help', ()->
   console.log ""
   console.log "    http://betawerk.co/"
   console.log ""
+
 program.parse(process.argv)

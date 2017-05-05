@@ -8,13 +8,11 @@ _settings = require './settings'
 # CLI commands
 module.exports =
   init: ()->
-    cli.spinner "Creating new pm2-meteor.json"
     localTasks.initPM2MeteorSettings (err)->
       if err
-        cli.spinner "", true
         cli.fatal "#{err.message}"
       else
-        cli.spinner "#{_settings.pm2MeteorConfigName} created!", true
+        cli.info "#{_settings.pm2MeteorConfigName} created!", true
   deploy: (reconfig)->
     cli.spinner "Building your app and deploying to host machine"
     pm2mConf = commonTasks.readPM2MeteorConfig()
@@ -158,20 +156,3 @@ module.exports =
         cli.fatal "#{err.message}"
       else
         cli.ok "Reverted and hard-restarted your app."
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
