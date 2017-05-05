@@ -106,6 +106,10 @@ $ pm2-meteor init
     // exec mode for pm2
     "exec_mode": "cluster_mode",
     "instances": 2
+
+    // set some free ports if you want to use fork_mode with several instances
+    // (e.g. you want to handle loadbalancing yourself)
+    // "freePorts": [3001, 3002]
   },
   // optional - set this one if you want to undeploy your app
   // "allowUndeploy": true
@@ -218,6 +222,34 @@ Deploy a local app and run app in fork-mode:
     "deploymentDir": "/home/nodejs/",
     "exec_mode": "fork_mode",
     "instances": 1
+  }
+}
+
+```
+
+Deploy a local app and run app in fork-mode with several instances (for managing load balancing yourself):
+```
+{
+  "appName": "todos",
+  "appLocation": {
+    "local":"~/Workspace/todos"
+  },
+  "meteorSettingsLocation": "~/Workspace/todos/settings/production.json",
+  "prebuildScript": "",
+  "meteorBuildFlags": "--architecture os.linux.x86_64",
+  "env": {
+    "PORT": 3000, // first fork_mode instande willl use this port ...
+    "MONGO_URL": "mongodb://localhost:27017/todos",
+    "ROOT_URL": "http://todos.my-host.co"
+  },
+  "server": {
+    "host": "my-host.co",
+    "username": "nodejs",
+    "pem": "~/.ssh/id_rsa",
+    "deploymentDir": "/home/nodejs/",
+    "exec_mode": "fork_mode",
+    "instances": 3,
+    "freePorts": [3002, 3003] // ... further fork_mode instances will use this ports
   }
 }
 

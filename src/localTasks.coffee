@@ -75,6 +75,20 @@ module.exports =
         done err
     appJson.env["METEOR_SETTINGS"] = meteorSettingsObj
     envJson.apps.push appJson
+    if pm2mConf.server.exec_mode and pm2mConf.server.exec_mode is 'fork_mode' and pm2mConf.server.instances > 1
+      if pm2mConf.server.freePorts and (pm2mConf.server.freePorts.length >= pm2mConf.server.instances - 1)
+        [1..pm2mConf.server.instances-1].forEach (ind)->
+          anotherAppJson = JSON.parse(JSON.stringify(appJson))
+          anotherAppJson.name = "#{anotherAppJson.name}-#{ind+1}"
+          anotherAppJson.env.PORT = pm2mConf.server.freePorts[ind-1]
+          anotherAppJson.instances = 1
+          envJson.apps.push anotherAppJson
+
+        envJson.apps[0].name = "#{envJson.apps[0].name}-1"
+        envJson.apps[0].instances = 1
+      else
+        done new Error('You should define server.freePorts with min. as much ports as server.instances!')
+
     prettyJson = JSON.stringify(envJson, null, 2)
     try
       fs.writeFileSync _settings.pm2EnvConfigName, prettyJson
