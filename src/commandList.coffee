@@ -58,10 +58,10 @@ module.exports =
     ], (err)->
       cli.spinner "", true
       if err
-        localTasks.makeClean (err)-> clie.error(err) if err
+        localTasks.makeClean (err)-> null
         cli.fatal "#{err.message}"
       else
-        localTasks.makeClean (err)-> clie.error(err) if err
+        localTasks.makeClean (err)-> null
         cli.ok "Deployed new env settings"
   start: ()->
     cli.spinner "Starting app on host machine"
