@@ -43,10 +43,10 @@ module.exports =
     p.then (answers)->
       { appName, appLocation, meteorSettingsLocation, meteorBuildFlags } = answers
       { rootURL: ROOT_URL, port: PORT, mongoURL: MONGO_URL } = answers
-      { serverHost: host, serverUsername: username, serverPassword: password, serverInstances: instances } = answers
+      { serverHost: host, serverUsername: username, serverPassword: password, serverPem: pem, serverInstances: instances } = answers
       json = Object.assign json, { appName, appLocation, meteorSettingsLocation, meteorBuildFlags }
       json.env = Object.assign json.env, { ROOT_URL, PORT, MONGO_URL }
-      json.server = Object.assign json.server, { host, username, password, instances }
+      json.server = Object.assign json.server, { host, username, password, pem, instances }
       prettyJson = JSON.stringify json, null, 2
       try
         fs.writeFileSync _settings.pm2MeteorConfigName, prettyJson

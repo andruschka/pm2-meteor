@@ -20,7 +20,7 @@ module.exports =
       host: ""
       username: ""
       password: ""
-      deploymentDir: "/opt/pm2-meteor"
+      deploymentDir: "/opt/meteor-apps"
       loadProfile: ""
       nvm:
         bin: ""
@@ -47,6 +47,12 @@ module.exports =
       name: 'appLocation'
       message: 'What is the app location? (path or git url)'
       default: './'
+      filter: (val)->
+        rgx = new RegExp("((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?")
+        if rgx.test(val) is true
+          { git: val, branch: 'master' }
+        else
+          { local: val }
     }
     {
       type: 'input'
@@ -98,10 +104,35 @@ module.exports =
       default: ()-> ''
     }
     {
+      type: 'list'
+      name: '_authMethod'
+      message: 'Do you want to auth by password or by PEM file?'
+      choices: [
+        'password'
+        'pem file'
+      ]
+    }
+    {
       type: 'password'
       name: 'serverPassword'
       message: 'Password?'
       default: ()-> ''
+      when: ({ _authMethod })->
+        if _authMethod is 'password'
+          true
+        else
+          false
+    }
+    {
+      type: 'input'
+      name: 'serverPem'
+      message: 'Where is your PEM file located?'
+      default: ()-> '~/.ssh/someFile.pem'
+      when: ({ _authMethod })->
+        if _authMethod is 'pem file'
+          true
+        else
+          false
     }
     {
       type: 'input'
