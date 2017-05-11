@@ -1,44 +1,41 @@
-# pm2-meteor
-A CLI tool, that will deploy your Meteor app (from your dev machine or from git) as Nodejs bundle and run it with PM2. (tested with Ubuntu and Freebsd hosts)
+<div align="center">
+  <img src="https://betawerk.co/img/pm2-m.jpg" style="width: 50%; margin:0 auto; border-radius: 8px;" />
+</div>
+  
 
-### Checkout [this short tutorial](http://pm2-meteor.betawerk.co/) - so it is kind of a collection of some links for setting up everything with some extra steps. (This is how we setup our Meteor machines - so if this works for us - maybe it will for you ;-) )
+**pm2-meteor** is a CLI tool, that will deploy your Meteor app (from your dev machine or from git) as Nodejs bundle and run it with PM2. (tested with Ubuntu and Freebsd hosts)
 
-## A friendly info
-This tool is still under construction and we will continue adding features.  
-What is different about this tool:  
+## Features
 1. you can deploy from a git repo  
-2. you can deploy to freebsd jails  
+2. you can deploy to almost every server construction (also freebsd jails)  
 3. it uses PM2 to run your Meteor Apps  
-4. you pass the path to the Meteor settings file, instead of copy-pasting them  
-5. you can set the directory where your apps will be deployed  
+4. reads your Meteor settings file from a path for you    
+5. you can configure the directory where your apps will be deployed  
 6. you can scale your App in realtime with one command  
+7. make generic pm2-meteor settings with a `pm-meteor.js` file which module.exports settings  
 
 ### Why PM2?
 PM2 is a process manager, that will run/restart Nodejs apps, just like forever - but:
 - PM2 has build in load balancing and scaling features
 - PM2 also runs bash / python / ruby / coffee / php / perl
 - We tested PM2 with some of our complex Meteor apps and it performed well (while forever crashed them without any notable reasons)
+- more under [pm2.keymetrics.io](http://pm2.keymetrics.io/)
 
-### check out PM2 here: http://pm2.keymetrics.io/
-
-## TODO
-- fork_mode (we recommend to use the cluster_mode)
-- further sticky-session implementation (except of Meteor.environmentVars this works out of the box with PM2 cluster_mode)
-
-## Installation
+## Installation (on your dev machine)
 ```
 $ npm i -g pm2-meteor
 ```
 You should have Nodejs, npm and PM2 installed on your host machine.  
-pm2-meteor won't install global tools on your server! This is your job ;-)
+pm2-meteor won't install global tools on your server.
 
 ## Usage
-### 1. Init a pm2-meteor.json config file into an empty dir
+### 1. Init a pm2-meteor.json config file
 ```
 $ mkdir ninjaApp_deployment
 $ cd ninjaApp_deployment
 $ pm2-meteor init
 ```
+(The pm2-meteor wizzard will ask you some questions and prefill the configuration file.)
 
 ### 2. Complete the generated pm2-meteor.json file
 ```
@@ -125,7 +122,7 @@ $ pm2-meteor deploy
 ```
 If you already have deployed this app before, the old app tar-bundle will be moved to a ./backup directory.  
 
-##### If you want to only deploy settings / env changes
+##### If you want to only reconfigure settings / env changes
 ```
 $ pm2-meteor reconfig
 ```
@@ -200,10 +197,16 @@ Deploy from a private github repo and start 2 load balanced instances:
 
 ```
 
-Deploy a local app and run app in fork-mode:
+Deploy a local app and run app in fork-mode:  
+(using a pm2-meteor.js file and passing the MONGO_URL via bash env var
+e.g.: `MONGO_URL='mongodb://user:pw@host/db' pm2-meteor deploy`
+)  
 ```
-{
-  "appName": "todos",
+const appName = "todos"
+const mongoUrl = process.env.MONGO_URL
+
+module.exports = {
+  appName, // <~ just ES6 stuff for  appName: appName
   "appLocation": {
     "local":"~/Workspace/todos"
   },
@@ -212,7 +215,7 @@ Deploy a local app and run app in fork-mode:
   "meteorBuildFlags": "--architecture os.linux.x86_64",
   "env": {
     "PORT": 3000,
-    "MONGO_URL": "mongodb://localhost:27017/todos",
+    "MONGO_URL": mongoUrl, // <~
     "ROOT_URL": "http://todos.my-host.co"
   },
   "server": {

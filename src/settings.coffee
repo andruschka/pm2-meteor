@@ -2,6 +2,7 @@ path = require 'path'
 
 module.exports =
   pm2MeteorConfigName: "pm2-meteor.json"
+  tryReadPm2MeteorConfigName: "pm2-meteor"
   pm2MeteorConfigTemplate:
     appName: ""
     appLocation:
