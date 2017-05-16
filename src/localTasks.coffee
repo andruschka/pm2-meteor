@@ -70,7 +70,7 @@ module.exports =
       try
         meteorSettingsLocation = abs(pm2mConf.meteorSettingsLocation)
         meteorSettingsObj = JSON.parse(fs.readFileSync meteorSettingsLocation, 'utf8')
-        if meteorSettingsObj appJson.env["METEOR_SETTINGS"] = meteorSettingsObj
+        appJson.env["METEOR_SETTINGS"] = meteorSettingsObj if meteorSettingsObj
       catch err
         done err
     envJson.apps.push appJson
