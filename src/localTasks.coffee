@@ -66,14 +66,13 @@ module.exports =
     if pm2mConf.server.log_date_format and pm2mConf.server.log_date_format isnt ""
       appJson.log_date_format = pm2mConf.server.log_date_format
     # get Meteor settings
-    meteorSettingsObj = {}
     if pm2mConf.meteorSettingsLocation and !pm2mConf.meteorSettingsInRepo
       try
         meteorSettingsLocation = abs(pm2mConf.meteorSettingsLocation)
         meteorSettingsObj = JSON.parse(fs.readFileSync meteorSettingsLocation, 'utf8')
+        if meteorSettingsObj appJson.env["METEOR_SETTINGS"] = meteorSettingsObj
       catch err
         done err
-    appJson.env["METEOR_SETTINGS"] = meteorSettingsObj
     envJson.apps.push appJson
     if pm2mConf.server.exec_mode and pm2mConf.server.exec_mode is 'fork_mode' and pm2mConf.server.instances > 1
       if pm2mConf.server.freePorts and (pm2mConf.server.freePorts.length >= pm2mConf.server.instances - 1)
