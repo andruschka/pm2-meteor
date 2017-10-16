@@ -30,8 +30,8 @@ class BashCmd
     if nvm
       if nvm.bin
         result = appendCmd result, "[[ -r #{nvm.bin} ]] && . #{nvm.bin}"
-        # if nvm.use
-        #   result = appendCmd result, "nvm use #{nvm.use}"
+        if nvm.use
+        result = appendCmd result, "nvm use #{nvm.use}"
     result = appendCmd result, @rawCmd
     return result
 
