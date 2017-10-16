@@ -63,6 +63,7 @@ module.exports =
     appJson.script = path.join(pm2mConf.server.deploymentDir, pm2mConf.appName, "bundle/main.js")
     appJson.exec_mode = pm2mConf.server.exec_mode
     appJson.instances = pm2mConf.server.instances
+    appJson.exec_interpreter = pm2mConf.server.exec_interpreter
     if pm2mConf.server.log_date_format and pm2mConf.server.log_date_format isnt ""
       appJson.log_date_format = pm2mConf.server.log_date_format
     # get Meteor settings
