@@ -30,8 +30,9 @@ class BashCmd
     if nvm
       if nvm.bin
         result = appendCmd result, "[[ -r #{nvm.bin} ]] && . #{nvm.bin}"
-        # if nvm.use
-        #   result = appendCmd result, "nvm use #{nvm.use}"
+        if nvm.use
+          use = nvm.use.replace /\./g, ''
+          result = appendCmd result, "nvm use #{nvm.use} && export PM2_HOME=/home/$USER/.pm2meteor#{use}"
     result = appendCmd result, @rawCmd
     return result
 
