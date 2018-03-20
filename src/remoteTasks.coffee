@@ -47,7 +47,8 @@ module.exports =
       pem: fs.readFileSync(abs(pm2mConf.server.pem)) if pm2mConf.server.pem
     ,
       ssh:
-        port: pm2mConf.server.port if pm2mConf.server.port
+        agent: (process.env.SSH_AUTH_SOCK if pm2mConf.server.useAgent)
+        port: (pm2mConf.server.port if pm2mConf.server.port)
     return session
   checkDeps: (session, pm2mConf, done)->
     cmd = cmdString pm2mConf, "(command -v node || echo 'missing node' 1>&2) && (command -v npm || echo 'missing npm' 1>&2) && (command -v pm2 || echo 'missing pm2' 1>&2)"
