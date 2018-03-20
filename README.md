@@ -84,6 +84,9 @@ $ pm2-meteor init
     // "pem":"~/.ssh/id_rsa",
     // optional - set port
     // "port": "22",
+    // or with ssh-agent
+    // unix socket for ssh-agent will be read from $SSH_AUTH_SOCK environment variable
+    // "useAgent": true
 
     // this dir will contain your apps
     // (app will be deployed to /opt/pm2-meteor/ninjaApp)
