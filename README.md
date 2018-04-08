@@ -104,6 +104,10 @@ $ pm2-meteor init
     "exec_mode": "cluster_mode",
     "instances": 2
 
+    // optional - advanced features
+    // "node_args": ""
+    // "max_memory_restart": "150M"
+
     // set some free ports if you want to use fork_mode with several instances
     // (e.g. you want to handle loadbalancing yourself)
     // "freePorts": [3001, 3002]
