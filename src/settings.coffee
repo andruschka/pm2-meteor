@@ -26,6 +26,8 @@ module.exports =
       nvm:
         bin: ""
         use: ""
+      node_args: ""
+      max_memory_restart: ""
       exec_mode: "cluster_mode"
       instances: 1
   pm2EnvConfigName: "pm2-env.json"

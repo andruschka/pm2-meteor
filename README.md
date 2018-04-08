@@ -1,18 +1,18 @@
 <div align="center">
   <img src="https://betawerk.co/img/pm2-m.jpg" style="width: 50%; margin:0 auto; border-radius: 8px;" />
 </div>
-  
+
 
 **pm2-meteor** is a CLI tool, that will deploy your Meteor app (from your dev machine or from git) as Nodejs bundle and run it with PM2. (tested with Ubuntu and Freebsd hosts)
 
 ## Features
-1. you can deploy from a git repo  
-2. you can deploy to almost every server construction (also freebsd jails)  
-3. it uses PM2 to run your Meteor Apps  
-4. reads your Meteor settings file from a path for you    
-5. you can configure the directory where your apps will be deployed  
-6. you can scale your App in realtime with one command  
-7. make generic pm2-meteor settings with a `pm-meteor.js` file which module.exports settings  
+1. you can deploy from a git repo
+2. you can deploy to almost every server construction (also freebsd jails)
+3. it uses PM2 to run your Meteor Apps
+4. reads your Meteor settings file from a path for you
+5. you can configure the directory where your apps will be deployed
+6. you can scale your App in realtime with one command
+7. make generic pm2-meteor settings with a `pm-meteor.js` file which module.exports settings
 
 ### Why PM2?
 PM2 is a process manager, that will run/restart Nodejs apps, just like forever - but:
@@ -25,7 +25,7 @@ PM2 is a process manager, that will run/restart Nodejs apps, just like forever -
 ```
 $ npm i -g pm2-meteor
 ```
-You should have Nodejs, npm and PM2 installed on your host machine.  
+You should have Nodejs, npm and PM2 installed on your host machine.
 pm2-meteor won't install global tools on your server.
 
 ## Usage
@@ -104,6 +104,10 @@ $ pm2-meteor init
     "exec_mode": "cluster_mode",
     "instances": 2
 
+    // optional - advances features
+    // "node_args": ""
+    // "max_memory_restart": "150M"
+
     // set some free ports if you want to use fork_mode with several instances
     // (e.g. you want to handle loadbalancing yourself)
     // "freePorts": [3001, 3002]
@@ -120,7 +124,7 @@ $ pm2-meteor init
 ```
 $ pm2-meteor deploy
 ```
-If you already have deployed this app before, the old app tar-bundle will be moved to a ./backup directory.  
+If you already have deployed this app before, the old app tar-bundle will be moved to a ./backup directory.
 
 ##### If you want to only reconfigure settings / env changes
 ```
@@ -155,7 +159,7 @@ $ pm2-meteor scale 4
 ```
 
 ### 6. Undeploy your app (DANGEROUS)
-To delete your app from the PM2 deamon and delete all app files add "allowUndeploy":true to your pm2-meteor setting, then:  
+To delete your app from the PM2 deamon and delete all app files add "allowUndeploy":true to your pm2-meteor setting, then:
 ```
 $ pm2-meteor undeploy
 ```
@@ -197,10 +201,10 @@ Deploy from a private github repo and start 2 load balanced instances:
 
 ```
 
-Deploy a local app and run app in fork-mode:  
+Deploy a local app and run app in fork-mode:
 (using a pm2-meteor.js file and passing the MONGO_URL via bash env var
 e.g.: `MONGO_URL='mongodb://user:pw@host/db' pm2-meteor deploy`
-)  
+)
 ```
 const appName = "todos"
 const mongoUrl = process.env.MONGO_URL

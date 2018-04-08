@@ -61,6 +61,10 @@ module.exports =
     appJson.name = pm2mConf.appName
     appJson.env = pm2mConf.env
     appJson.script = path.join(pm2mConf.server.deploymentDir, pm2mConf.appName, "bundle/main.js")
+    if pm2mConf.server.node_args and pm2mConf.server.node_args isnt ""
+      appJson.node_args = pm2mConf.server.node_args
+    if pm2mConf.server.max_memory_restart and pm2mConf.server.max_memory_restart isnt ""
+      appJson.max_memory_restart = pm2mConf.server.max_memory_restart
     appJson.exec_mode = pm2mConf.server.exec_mode
     appJson.instances = pm2mConf.server.instances
     if pm2mConf.server.log_date_format and pm2mConf.server.log_date_format isnt ""
