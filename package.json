@@ -1,11 +1,11 @@
 {
   "name": "pm2-meteor",
-  "version": "0.5.6",
+  "version": "0.9.0",
   "bin": "lib/program.js",
   "description": "Simplest way to deploy, scale and run Meteor Apps with PM2.",
   "main": "lib/pm2-meteor.js",
   "scripts": {
-    "prepublish": "make build",
+    "prepare": "make build",
     "build": "make build"
   },
   "repository": {
@@ -36,5 +36,8 @@
     "commander": "^2.9.0",
     "inquirer": "^3.0.6",
     "nodemiral": "^1.1.1"
+  },
+  "devDependencies": {
+    "coffeescript": "^2.2.4"
   }
 }

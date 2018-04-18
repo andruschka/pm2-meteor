@@ -23,15 +23,10 @@ class BashCmd
     else
       throw new Error "You must pass a pm2mConf and a Command string..."
   getString: ()->
-    {loadProfile, nvm} = @pm2mConf.server
+    {loadProfile} = @pm2mConf.server
     result = ""
     if loadProfile
       result = appendCmd result, "[[ -r #{loadProfile} ]] && . #{loadProfile}"
-    if nvm
-      if nvm.bin
-        result = appendCmd result, "[[ -r #{nvm.bin} ]] && . #{nvm.bin}"
-        # if nvm.use
-        #   result = appendCmd result, "nvm use #{nvm.use}"
     result = appendCmd result, @rawCmd
     return result
 

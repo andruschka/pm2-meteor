@@ -23,9 +23,7 @@ module.exports =
       password: ""
       deploymentDir: "/opt/meteor-apps"
       loadProfile: ""
-      nvm:
-        bin: ""
-        use: ""
+      interpreter: ""
       exec_mode: "cluster_mode"
       instances: 1
   pm2EnvConfigName: "pm2-env.json"

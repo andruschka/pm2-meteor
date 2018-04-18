@@ -92,17 +92,12 @@ $ pm2-meteor init
     // optional - will source a profile before executing tasks on the server
     // "loadProfile": "",
 
-    // optional - NVM Support
-    // if you are using nvm - make sure to fill out bin ("~/.nvm/nvm.sh" in most cases)
-    // ! using multiple node versions - coming soon !
-    // "nvm": {
-    //    "bin": "",
-    //    "use": ""
-    // },
-
     // exec mode for pm2
     "exec_mode": "cluster_mode",
-    "instances": 2
+    "instances": 2,
+
+    // you can also set another interpreter (e.g. use another node version / nvm - see pm2 docs)
+    "interpreter": "",
 
     // set some free ports if you want to use fork_mode with several instances
     // (e.g. you want to handle loadbalancing yourself)
