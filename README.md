@@ -67,6 +67,11 @@ $ pm2-meteor init
   // say you are still using meteorite and want to install deps before deploying:
   // "prebuildScript": "mrt install",
 
+  "postbuildRemoteScript": "",
+  // say you need some npm packages like Chrome Puppeteer which actually need to be installed on the server
+  // this script is called inside ninjaApp/bundle/programs/server
+  // "postbuildRemoteScript": "cd npm && npm install puppeteer"
+
   // the env vars
   // (METEOR_SETTINGS will be generated from your meteor-settings file)
   "env": {

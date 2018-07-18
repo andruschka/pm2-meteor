@@ -100,6 +100,17 @@ module.exports =
         done err
       else
         done()
+  runRemoteScript: (session, pm2mConf, done)->
+    if pm2mConf.postbuildRemoteScript and pm2mConf.postbuildRemoteScript.trim() isnt ""
+      serverLocation = path.join getAppLocation(pm2mConf), _settings.bundleName, "/programs/server"
+      cmd = cmdString pm2mConf, "cd #{serverLocation} && " + pm2mConf.postbuildRemoteScript
+      session.execute cmd, {}, (err, code, logs)->
+        if err
+          done err
+        else
+          done()
+    else
+      done()
   startApp: (session, pm2mConf, done)->
     cmd = cmdString pm2mConf, "cd #{getAppLocation(pm2mConf)} && pm2 start #{_settings.pm2EnvConfigName}"
     session.execute cmd, {}, (err, code, logs)->
