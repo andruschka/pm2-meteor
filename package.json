@@ -38,6 +38,6 @@
     "nodemiral": "^1.1.1"
   },
   "devDependencies": {
-    "coffeescript": "^2.2.4"
+    "coffeescript": "^2.3.1"
   }
 }
