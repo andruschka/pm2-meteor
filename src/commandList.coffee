@@ -35,6 +35,8 @@ module.exports =
       (cb)->
         remoteTasks.installBundleDeps session, pm2mConf, cb
       (cb)->
+        remoteTasks.runRemoteScript session, pm2mConf, cb
+      (cb)->
         remoteTasks.reloadApp session, pm2mConf, reconfig, cb
     ], (err)->
       cli.spinner "", true
