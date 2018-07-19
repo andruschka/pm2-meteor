@@ -67,9 +67,10 @@ program
     console.log "  $ pm2-meteor scale +2"
     console.log "  $ pm2-meteor scale 4"
 program.on '--help', ()->
-  console.log "  Visit us:"
   console.log ""
-  console.log "    http://betawerk.co/"
+  console.log "  Original version by: http://betawerk.co/"
+  console.log ""
+  console.log "  Fork by: https://orderlion.at/"
   console.log ""
 
 program.parse(process.argv)
