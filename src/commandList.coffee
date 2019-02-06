@@ -13,7 +13,7 @@ module.exports =
         cli.fatal "#{err.message}"
       else
         cli.info "#{_settings.pm2MeteorConfigName} created!", true
-  deploy: (reconfig)->
+  deploy: (reconfig, cold)->
     cli.spinner "Building your app and deploying to host machine"
     pm2mConf = commonTasks.readPM2MeteorConfig()
     session = remoteTasks.getRemoteSession pm2mConf
@@ -35,7 +35,7 @@ module.exports =
       (cb)->
         remoteTasks.installBundleDeps session, pm2mConf, cb
       (cb)->
-        remoteTasks.reloadApp session, pm2mConf, reconfig, cb
+        remoteTasks.reloadApp session, pm2mConf, reconfig, cold, cb
     ], (err)->
       cli.spinner "", true
       if err

@@ -14,9 +14,10 @@ program
 program
   .command('deploy')
   .description('deploy your App to the server(s)')
-  .option('-r, --reconfig', "Settings have changed and PM2 should reset the env")
+  .option('-r, --reconfig', "Settings/ENV vars have changed and PM2 should reset the env")
+  .option('-c, --cold', 'Cold deploy, without restarting the application (you need to restart yourself)')
   .action ()->
-    cmds["deploy"](this.reconfig)
+    cmds["deploy"](this.reconfig, this.cold)
 program
   .command('reconfig')
   .description('deploy only new settings and env vars')

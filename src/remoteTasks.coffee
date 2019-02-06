@@ -144,8 +144,11 @@ module.exports =
         done err
       else
         done()
-  reloadApp: (session, pm2mConf, reconfig, done)->
-    if reconfig
+  reloadApp: (session, pm2mConf, reconfig, cold, done)->
+    if cold
+      console.log "Won't restart app. Please make sure to restart by yourself!"
+      done()
+    else if reconfig
       @hardReloadApp session, pm2mConf, done
     else
       @softReloadApp session, pm2mConf, done
