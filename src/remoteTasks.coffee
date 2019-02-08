@@ -94,7 +94,7 @@ module.exports =
         done()
   installBundleDeps: (session, pm2mConf, done)->
     serverLocation = path.join getAppLocation(pm2mConf), _settings.bundleName, "/programs/server"
-    cmd = cmdString pm2mConf, "cd #{serverLocation} && node --version && npm install --production && npm rebuild"
+    cmd = cmdString pm2mConf, "cd #{serverLocation} && node --version && npm install --production"
     session.execute cmd, {}, (err, code, logs)->
       if err
         done err
