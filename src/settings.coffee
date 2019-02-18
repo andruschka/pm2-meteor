@@ -21,6 +21,7 @@ module.exports =
       host: ""
       username: ""
       password: ""
+      useAgent: false
       deploymentDir: "/opt/meteor-apps"
       loadProfile: ""
       interpreter: ""
