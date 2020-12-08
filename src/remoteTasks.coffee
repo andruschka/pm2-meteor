@@ -36,13 +36,17 @@ cmdString = (pm2mConf, cmd)->
 # Remote tasks
 module.exports =
   getRemoteSession: (pm2mConf)->
+    sshConfig = null
+    if pm2mConf.server.port
+      sshConfig = { port: pm2mConf.server.port }
+    if pm2mConf.server.ssh
+      sshConfig = if sshConfig then { ...sshConfig, ...pm2mConf.server.ssh } else pm2mConf.server.ssh
     session = nodemiral.session "#{pm2mConf.server.host}",
       username: pm2mConf.server.username
       password: pm2mConf.server.password if pm2mConf.server.password
       pem: fs.readFileSync(abs(pm2mConf.server.pem)) if pm2mConf.server.pem
     ,
-      ssh:
-        port: pm2mConf.server.port if pm2mConf.server.port
+      ssh: sshConfig
     return session
   checkDeps: (session, pm2mConf, done)->
     cmd = cmdString pm2mConf, "(command -v node || echo 'missing node' 1>&2) && (command -v npm || echo 'missing npm' 1>&2) && (command -v pm2 || echo 'missing pm2' 1>&2)"

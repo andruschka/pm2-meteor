@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://betawerk.co/img/pm2-m.jpg" style="width: 50%; margin:0 auto; border-radius: 8px;" />
+  <img src="_logo.png" style="width: 50%; margin:0 auto; border-radius: 8px;" />
 </div>
   
 
@@ -84,6 +84,9 @@ $ pm2-meteor init
     // "pem":"~/.ssh/id_rsa",
     // optional - set port
     // "port": "22",
+
+    // optional - object whose key and value will be passed as -o key:value to any ssh session
+    // "ssh": {} 
 
     // this dir will contain your apps
     // (app will be deployed to /opt/pm2-meteor/ninjaApp)
