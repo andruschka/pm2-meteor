@@ -103,7 +103,7 @@ $ pm2-meteor init
     "interpreter": "",
 
     // set some free ports if you want to use fork_mode with several instances
-    // (e.g. you want to handle loadbalancing yourself)
+    // (you need handle loadbalancing yourself!)
     // "freePorts": [3001, 3002]
   },
   // optional - set this one if you want to undeploy your app
