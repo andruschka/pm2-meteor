@@ -70,7 +70,7 @@ program
 program.on '--help', ()->
   console.log "  Visit us:"
   console.log ""
-  console.log "    http://betawerk.co/"
+  console.log "    https://parcellab.com/ -- we are hiring!"
   console.log ""
 
 program.parse(process.argv)

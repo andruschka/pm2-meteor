@@ -72,6 +72,9 @@ $ pm2-meteor init
   "env": {
     "ROOT_URL": "http://ninja.my-host.com",
     "PORT": 4004,
+    // optional - set some additional free ports if you want to use fork_mode with several instances
+    // (you need handle loadbalancing yourself!)
+    // "FORK_PORTS": [4005, 4006]
     "MONGO_URL": "mongodb://localhost:27017/ninjaApp"
   },
 
@@ -100,11 +103,7 @@ $ pm2-meteor init
     "instances": 2,
 
     // you can also set another interpreter (e.g. use another node version / nvm - see pm2 docs)
-    "interpreter": "",
-
-    // set some free ports if you want to use fork_mode with several instances
-    // (you need handle loadbalancing yourself!)
-    // "freePorts": [3001, 3002]
+    "interpreter": ""
   },
   // optional - set this one if you want to undeploy your app
   // "allowUndeploy": true
