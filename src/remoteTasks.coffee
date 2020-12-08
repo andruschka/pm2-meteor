@@ -36,9 +36,9 @@ cmdString = (pm2mConf, cmd)->
 # Remote tasks
 module.exports =
   getRemoteSession: (pm2mConf)->
-    sshConfig = null
+    sshConfig = {}
     if pm2mConf.server.port
-      sshConfig = { port: pm2mConf.server.port }
+      sshConfig.port = pm2mConf.server.port
     if pm2mConf.server.ssh
       sshConfig = if sshConfig then { ...sshConfig, ...pm2mConf.server.ssh } else pm2mConf.server.ssh
     session = nodemiral.session "#{pm2mConf.server.host}",
